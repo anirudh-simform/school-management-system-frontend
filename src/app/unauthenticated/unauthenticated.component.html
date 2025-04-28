@@ -1,0 +1,45 @@
+<!-- unauth.component.html -->
+<div
+  class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-100 to-pink-50 relative overflow-hidden"
+>
+  <!-- Main Content -->
+  <div
+    class="flex flex-col items-center justify-center min-h-screen px-6 py-24 text-center z-10 relative"
+  >
+    <div
+      class="bg-white/70 backdrop-blur-md p-10 rounded-3xl shadow-2xl w-full max-w-lg animate-fadeInUp"
+    >
+      <div class="text-6xl mb-6 text-purple-600">
+        <i class="pi pi-lock"></i>
+      </div>
+      <h1 class="text-4xl font-extrabold text-indigo-700 font-playfair mb-4">
+        Access Denied
+      </h1>
+      <p class="text-md text-gray-700 font-medium mb-8 font-sourcesans">
+        You are either
+        <span class="font-semibold text-pink-600">Unauthenticated</span>
+        or
+        <span class="font-semibold text-red-600">Unauthorized</span>
+        to access this page.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a routerLink="/login">
+          <button
+            class="btn bg-gradient-to-r from-purple-500 to-indigo-600 text-white border-0 shadow-md hover:scale-105 transition-transform duration-200"
+          >
+            <i class="pi pi-sign-in animate-pulse mr-2"></i>
+            Go to Login
+          </button>
+        </a>
+        <a routerLink="/">
+          <button
+            class="btn bg-gradient-to-r from-blue-500 to-teal-500 text-white border-0 shadow-md hover:scale-105 transition-transform duration-200"
+          >
+            <i class="pi pi-home mr-2"></i>
+            Go to Home
+          </button>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

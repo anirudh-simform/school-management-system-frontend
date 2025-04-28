@@ -1,0 +1,58 @@
+import { Component, inject } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
+import { HttpService } from '../http.service';
+import { AuthStatusService } from '../auth-status.service';
+import { Validators } from '@angular/forms';
+
+@Component({
+  selector: 'app-login',
+  imports: [ReactiveFormsModule],
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css',
+})
+export class LoginComponent {
+  private formBuilder = inject(FormBuilder);
+  private router = inject(Router);
+  private http = inject(HttpService);
+  loginForm = this.formBuilder.group({
+    email: [
+      '',
+      {
+        validators: [Validators.required, Validators.email],
+      },
+    ],
+    password: [
+      '',
+      {
+        validators: [Validators.required, Validators.minLength(6)],
+      },
+    ],
+  });
+  private authService = inject(AuthStatusService);
+
+  onSubmit() {
+    if (this.loginForm.invalid) {
+      return;
+    }
+    if (this.loginForm.value.email && this.loginForm.value.password) {
+      this.http
+        .login({
+          email: this.loginForm.value.email,
+          password: this.loginForm.value.password,
+        })
+        .subscribe((res) => {
+          console.log('response received');
+          if (res.ok) {
+            switch (res.body?.userDetails.role) {
+              case 'SchoolSuperAdmin':
+                this.router.navigate(['dashboard']);
+                this.authService.loginStatus.set(true);
+                this.authService.userRole.set(res.body.userDetails.role);
+                break;
+            }
+          }
+        });
+    }
+  }
+}

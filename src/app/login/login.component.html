@@ -1,0 +1,136 @@
+<div
+  class="min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-blue-50 via-purple-100 to-pink-50"
+>
+  <!-- Left Side: App Description -->
+  <div
+    class="md:w-1/2 p-10 flex flex-col justify-center bg-white bg-opacity-40 backdrop-blur-md"
+  >
+    <div class="max-w-md mx-auto space-y-6 text-center md:text-left">
+      <h1
+        class="text-4xl font-extrabold text-indigo-700 font-playfair leading-tight"
+      >
+        Welcome to
+        <span
+          class="font-playwrite text-3xl font-extrabold tracking-wide bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 bg-clip-text text-transparent"
+          >EduConnect</span
+        >
+      </h1>
+      <p class="text-gray-700 text-base md:text-lg font-sourcesans font-[600]">
+        A unified platform where Students, Teachers, and Admins connect,
+        collaborate, and thrive. From attendance and marks to live classes and
+        real-time chat
+        <span
+          class="font-playwrite text-lg font-extrabold tracking-wide bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 bg-clip-text text-transparent"
+          >EduConnect</span
+        >
+        simplifies your school life.
+      </p>
+      <ul class="text-gray-700 space-y-2 mt-4">
+        <li>
+          <i class="pi pi-check-circle text-primary mr-2"></i> Real-Time
+          Timetables
+        </li>
+        <li>
+          <i class="pi pi-check-circle text-primary mr-2"></i> Smart Attendance
+          & Marks
+        </li>
+        <li>
+          <i class="pi pi-check-circle text-primary mr-2"></i> Seamless Chat &
+          Collaboration
+        </li>
+        <li>
+          <i class="pi pi-check-circle text-primary mr-2"></i> Live Classes &
+          Assignments
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Right Side: Login Form -->
+  <div class="md:w-1/2 flex items-center justify-center px-6 py-12">
+    <div
+      class="w-full max-w-md bg-white bg-opacity-80 backdrop-blur-md shadow-xl rounded-3xl p-8 space-y-6"
+    >
+      <div class="text-center">
+        <h2 class="text-3xl font-extrabold text-indigo-700 font-playfair">
+          Login to
+          <span
+            class="font-playwrite text-3xl font-extrabold tracking-wide bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 bg-clip-text text-transparent"
+            >EduConnect</span
+          >
+        </h2>
+        <p class="text-sm text-gray-600">Access your dashboard instantly</p>
+      </div>
+
+      <form class="space-y-4" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <!-- Email Field -->
+        <div class="form-control">
+          <label class="label" for="email">
+            <span class="label-text font-medium text-indigo-700">Email</span>
+          </label>
+          <div class="relative">
+            <i
+              class="pi pi-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-indigo-500 z-10"
+            ></i>
+            <input
+              type="email"
+              class="input input-bordered pl-10 w-full"
+              placeholder="Email"
+              required
+              id="email"
+              formControlName="email"
+            />
+          </div>
+          @if (loginForm.controls.email.invalid &&
+          (loginForm.controls.email.touched || loginForm.controls.email.dirty ))
+          { @if (loginForm.controls.email.errors?.["required"]) {
+          <p class="text-red-500 text-sm mt-1 ml-1">This field is required.</p>
+          } @else if (loginForm.controls.email.errors?.["email"]){
+          <p class="text-red-500 text-sm mt-1 ml-1">
+            This field must be a valid email.
+          </p>
+          } }
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-control">
+          <label class="label" for="password">
+            <span class="label-text font-medium text-indigo-700">Password</span>
+          </label>
+          <div class="relative">
+            <i
+              class="pi pi-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-indigo-500 z-10"
+            ></i>
+            <input
+              type="password"
+              class="input input-bordered pl-10 w-full"
+              placeholder="password"
+              required
+              id="password"
+              formControlName="password"
+            />
+          </div>
+
+          @if (loginForm.controls.password.invalid &&
+          (loginForm.controls.password.touched ||
+          loginForm.controls.password.dirty )) { @if
+          (loginForm.controls.password.errors?.["required"]) {
+          <p class="text-red-500 text-sm mt-1 ml-1">This field is required.</p>
+          } @else if (loginForm.controls.password.errors?.["minlength"]){
+          <p class="text-red-500 text-sm mt-1 ml-1">
+            Password must be atleast 6 characters long
+          </p>
+          } }
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          class="btn w-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white shadow-md hover:scale-105 transition-transform duration-200"
+        >
+          <i class="pi pi-sign-in mr-2 animate-pulse"></i> Login
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

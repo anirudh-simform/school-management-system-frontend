@@ -1,0 +1,275 @@
+<!-- Full-page gradient background -->
+<div
+  class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-100 to-pink-50"
+>
+  <!-- Header -->
+  <nav
+    class="navbar bg-transparent shadow-sm border-b border-gray-200 z-10 relative"
+  >
+    <div class="flex-1">
+      <a
+        class="text-3xl font-extrabold tracking-wide font-playwrite bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 bg-clip-text text-transparent"
+        >EduConnect</a
+      >
+    </div>
+
+    @if (!authStatusService.loginStatus()) {
+    <div class="flex-none pr-10">
+      <a routerLink="/login">
+        <button
+          class="btn bg-gradient-to-r from-purple-500 to-indigo-600 text-white border-0 shadow-md hover:scale-105 transition-transform duration-200"
+        >
+          <i class="pi pi-sign-in animate-pulse mr-2"></i>
+          Login
+        </button>
+      </a>
+    </div>
+    } @else {
+    <div class="flex-none pr-10">
+      <!-- Added padding -->
+      <div class="dropdown dropdown-end">
+        <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+          <div
+            class="w-10 rounded-full ring ring-indigo-400 ring-offset-base-100 ring-offset-2"
+          >
+            <img src="person.png" />
+          </div>
+        </div>
+        <ul
+          tabindex="0"
+          class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-white rounded-box w-52"
+        >
+          <li>
+            <button
+              routerLink="dashboard"
+              class="btn btn-ghost m-px justify-start"
+            >
+              <i class="pi pi-tablet mr-2"></i>Dashboard
+            </button>
+            <button (click)="onLogout()" class="btn btn-ghost justify-start">
+              <i class="pi pi-sign-out mr-2"></i>Logout
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+    }
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="relative text-gray-900 py-20 px-6 overflow-hidden">
+    <!-- Eye-catching SVG graphic -->
+    <svg
+      class="absolute top-0 left-1/2 transform -translate-x-1/2 z-0 opacity-20 w-[130%] h-auto pointer-events-none select-none"
+      viewBox="0 0 1440 320"
+      preserveAspectRatio="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <linearGradient id="heroGradient" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#c084fc" />
+          <stop offset="100%" stop-color="#818cf8" />
+        </linearGradient>
+      </defs>
+      <path
+        fill="url(#heroGradient)"
+        d="M0,192L60,181.3C120,171,240,149,360,144C480,139,600,149,720,170.7C840,192,960,224,1080,213.3C1200,203,1320,149,1380,122.7L1440,96V0H1380C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0H0Z"
+      ></path>
+    </svg>
+
+    <!-- Main Content -->
+    <div class="max-w-5xl mx-auto text-center space-y-6 relative z-10">
+      <h1
+        class="text-5xl font-extrabold leading-tight text-indigo-600 drop-shadow-sm font-playfair"
+      >
+        Simplify School Life
+      </h1>
+      <p class="text-lg font-medium text-gray-700">
+        One platform for Students, Teachers, and Admins to connect, collaborate,
+        and succeed.
+      </p>
+      <button
+        class="btn btn-accent btn-wide text-white shadow-lg hover:scale-105 transition"
+      >
+        <i class="pi pi-play mr-2"></i> Get Started
+      </button>
+    </div>
+  </section>
+
+  <!-- Account Types -->
+  <section class="py-16 px-6">
+    <div class="max-w-6xl mx-auto">
+      <h2
+        class="text-3xl font-bold text-center mb-12 text-indigo-700 font-playfair"
+      >
+        Who's Using EduConnect?
+      </h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- Student -->
+        <div
+          class="card bg-white shadow-lg hover:shadow-xl transition duration-300"
+        >
+          <div class="card-body items-center text-center">
+            <i
+              class="pi pi-user text-4xl text-primary drop-shadow-sm mb-4 transition-transform duration-300 hover:scale-110"
+            ></i>
+            <h3 class="text-xl font-semibold">Student</h3>
+            <p class="text-sm text-gray-600 font-sourcesans font-[650]">
+              Track progress, access classes, chat, and stay organized
+              effortlessly.
+            </p>
+          </div>
+        </div>
+
+        <!-- Teacher -->
+        <div
+          class="card bg-white shadow-lg hover:shadow-xl transition duration-300"
+        >
+          <div class="card-body items-center text-center">
+            <i
+              class="pi pi-users text-4xl text-secondary drop-shadow-sm mb-4 transition-transform duration-300 hover:scale-110"
+            ></i>
+            <h3 class="text-xl font-semibold">Teacher</h3>
+            <p class="text-sm text-gray-600 font-sourcesans font-[650]">
+              Manage students, plan lessons, and collaborate across subjects.
+            </p>
+          </div>
+        </div>
+
+        <!-- Admin -->
+        <div
+          class="card bg-white shadow-lg hover:shadow-xl transition duration-300"
+        >
+          <div class="card-body items-center text-center">
+            <i
+              class="pi pi-cog text-4xl text-accent drop-shadow-sm mb-4 transition-transform duration-300 hover:scale-110"
+            ></i>
+            <h3 class="text-xl font-semibold">Admin</h3>
+            <p class="text-sm text-gray-600 font-sourcesans font-[650]">
+              Keep the entire system running smoothly with full control.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section
+    class="py-16 px-6 bg-white bg-opacity-70 backdrop-blur-md rounded-t-3xl shadow-inner"
+  >
+    <div class="max-w-6xl mx-auto">
+      <h2
+        class="text-3xl font-bold text-center mb-12 text-purple-700 font-playfair"
+      >
+        Explore the Features
+      </h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="card bg-white shadow hover:shadow-xl transition">
+          <div class="card-body flex gap-4 items-start">
+            <span class="text-primary">
+              <i class="pi pi-calendar text-2xl"></i>
+            </span>
+            <div>
+              <h3 class="font-semibold text-lg">Real-Time Timetables</h3>
+              <p class="text-sm text-gray-600 font-sourcesans font-[650]">
+                Updated instantly for all schedules and lectures.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card bg-white shadow hover:shadow-xl transition">
+          <div class="card-body flex gap-4 items-start">
+            <span class="text-secondary">
+              <i class="pi pi-check-square text-2xl"></i>
+            </span>
+            <div>
+              <h3 class="font-semibold text-lg">Attendance & Marks</h3>
+              <p class="text-sm text-gray-600 font-sourcesans font-[650]">
+                Automatic tracking and easy reporting of performance.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card bg-white shadow hover:shadow-xl transition">
+          <div class="card-body flex gap-4 items-start">
+            <span class="text-accent">
+              <i class="pi pi-pencil text-2xl"></i>
+            </span>
+            <div>
+              <h3 class="font-semibold text-lg">Assignments & Exams</h3>
+              <p class="text-sm text-gray-600 font-sourcesans font-[650]">
+                Create, submit, review, and grade with simplicity.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card bg-white shadow hover:shadow-xl transition">
+          <div class="card-body flex gap-4 items-start">
+            <span class="text-info">
+              <i class="pi pi-comments text-2xl"></i>
+            </span>
+            <div>
+              <h3 class="font-semibold text-lg">Chat & Collaboration</h3>
+              <p class="text-sm text-gray-600 font-sourcesans font-[650]">
+                Private DMs, group chats, and topic channels.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card bg-white shadow hover:shadow-xl transition">
+          <div class="card-body flex gap-4 items-start">
+            <span class="text-warning">
+              <i class="pi pi-video text-2xl"></i>
+            </span>
+            <div>
+              <h3 class="font-semibold text-lg">Live Classes</h3>
+              <p class="text-sm text-gray-600 font-sourcesans font-[650]">
+                Seamless video conferencing for all sessions.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card bg-white shadow hover:shadow-xl transition">
+          <div class="card-body flex gap-4 items-start">
+            <span class="text-error">
+              <i class="pi pi-bell text-2xl"></i>
+            </span>
+            <div>
+              <h3 class="font-semibold text-lg">Notice Board</h3>
+              <p class="text-sm text-gray-600 font-sourcesans font-[650]">
+                Keep the community updated with important info.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card bg-white shadow hover:shadow-xl transition">
+          <div class="card-body flex gap-4 items-start">
+            <span class="text-success">
+              <i class="pi pi-hashtag text-2xl"></i>
+            </span>
+            <div>
+              <h3 class="font-semibold text-lg">Topic Specific Channels</h3>
+              <p class="text-sm text-gray-600 font-sourcesans font-[650]">
+                Engage in focused subject-based discussions and collaborations.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer
+    class="footer footer-center p-6 bg-gradient-to-r from-pink-500 to-purple-600 text-white mt-10 shadow-md"
+  >
+    <p>Made with ❤️ by EduConnect Team • © 2025</p>
+  </footer>
+</div>

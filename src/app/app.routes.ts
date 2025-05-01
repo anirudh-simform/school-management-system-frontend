@@ -8,6 +8,10 @@ import { AdminConfigureComponent } from './dashboard/admin-dashboard/admin-confi
 import { AdminDashboardPageComponent } from './dashboard/admin-dashboard/admin-dashboard-page/admin-dashboard-page.component';
 import { DepartmentComponent } from './dashboard/admin-dashboard/admin-configure/department/department.component';
 import { ConfigurationOverviewComponent } from './dashboard/admin-dashboard/admin-configure/configuration-overview/configuration-overview.component';
+import { AdminCoursesAndProgramComponent } from './dashboard/admin-dashboard/admin-courses-and-program/admin-courses-and-program.component';
+import { CoursesAndProgramsOverviewComponent } from './dashboard/admin-dashboard/admin-courses-and-program/courses-and-programs-overview/courses-and-programs-overview.component';
+import { CoursesComponent } from './dashboard/admin-dashboard/admin-courses-and-program/courses/courses.component';
+import { ProgramsComponent } from './dashboard/admin-dashboard/admin-courses-and-program/programs/programs.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -17,6 +21,7 @@ export const routes: Routes = [
     component: DashboardComponent,
     canActivate: [authGuard],
     children: [
+      { path: '', component: AdminDashboardPageComponent },
       {
         path: 'configure',
         component: AdminConfigureComponent,
@@ -28,7 +33,15 @@ export const routes: Routes = [
           { path: 'department', component: DepartmentComponent },
         ],
       },
-      { path: '', component: AdminDashboardPageComponent },
+      {
+        path: 'courses-and-programs',
+        component: AdminCoursesAndProgramComponent,
+        children: [
+          { path: '', component: CoursesAndProgramsOverviewComponent },
+          { path: 'courses', component: CoursesComponent },
+          { path: 'programs', component: ProgramsComponent },
+        ],
+      },
     ],
   },
   { path: 'autherror', component: UnauthenticatedComponent },

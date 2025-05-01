@@ -3,6 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { AuthStatusService } from './auth-status.service';
 import { Router } from '@angular/router';
 
+import { type ProgramRequest } from './dashboard/admin-dashboard/admin-courses-and-program/programs/programs.model';
+import { type ProgramResponse } from './dashboard/admin-dashboard/admin-courses-and-program/programs/programs.model';
+import { type CourseResponse } from './dashboard/admin-dashboard/admin-courses-and-program/courses/courses.model';
+import { type UpdateProgramResponse } from './dashboard/admin-dashboard/admin-courses-and-program/programs/programs.model';
+import { type deletedProgramResponse } from './dashboard/admin-dashboard/admin-courses-and-program/programs/programs.model';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -76,5 +82,63 @@ export class HttpService {
       departments: { id: number; name: string }[];
       createdDepartment: { id: number; name: string };
     }>(this.baseUrl + `/department/${id}`, { withCredentials: true });
+  }
+
+  getAllCourses() {
+    return this.http.get<CourseResponse>(this.baseUrl + '/course', {
+      withCredentials: true,
+    });
+  }
+
+  createCourse(body: { name: string; description: string }) {
+    return this.http.post<{
+      message: string;
+      courses: { id: number; name: string; description: string }[];
+      createdCourse: { id: number; name: string; description: string };
+    }>(this.baseUrl + '/course', body, { withCredentials: true });
+  }
+
+  editCourse(id: number, body: { name: string; description: string }) {
+    return this.http.put<{
+      message: string;
+      courses: { id: number; name: string; description: string }[];
+      updatedCourse: { id: number; name: string; description: string };
+    }>(this.baseUrl + `/course/${id}`, body, { withCredentials: true });
+  }
+
+  deleteCourse(id: number) {
+    return this.http.delete<{
+      message: string;
+      courses: { id: number; name: string; description: string }[];
+      deletedCourse: { id: number; name: string; description: string };
+    }>(this.baseUrl + `/course/${id}`, { withCredentials: true });
+  }
+
+  createProgram(body: ProgramRequest) {
+    return this.http.post<ProgramResponse>(this.baseUrl + '/program', body, {
+      withCredentials: true,
+    });
+  }
+
+  getAllPrograms() {
+    return this.http.get<ProgramResponse['programs']>(
+      this.baseUrl + '/program',
+      { withCredentials: true }
+    );
+  }
+
+  editProgram(id: number, body: ProgramRequest) {
+    return this.http.put<UpdateProgramResponse>(
+      this.baseUrl + `/program/${id}`,
+      body,
+      { withCredentials: true }
+    );
+  }
+
+  deleteProgram(id: number) {
+    return this.http.delete<deletedProgramResponse>(
+      this.baseUrl + `/program/${id}`,
+      { withCredentials: true }
+    );
   }
 }

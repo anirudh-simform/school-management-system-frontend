@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { HttpService } from '../http.service';
 import { AuthStatusService } from '../auth-status.service';
 import { Validators } from '@angular/forms';
+import { catchError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -15,6 +17,7 @@ export class LoginComponent {
   private formBuilder = inject(FormBuilder);
   private router = inject(Router);
   private http = inject(HttpService);
+  wrongPassword = false;
   loginForm = this.formBuilder.group({
     email: [
       '',
@@ -41,17 +44,28 @@ export class LoginComponent {
           email: this.loginForm.value.email,
           password: this.loginForm.value.password,
         })
-        .subscribe((res) => {
-          console.log('response received');
-          if (res.ok) {
-            switch (res.body?.userDetails.role) {
-              case 'SchoolSuperAdmin':
-                this.router.navigate(['dashboard']);
-                this.authService.loginStatus.set(true);
-                this.authService.userRole.set(res.body.userDetails.role);
-                break;
+        .pipe(
+          catchError((error: HttpErrorResponse) => {
+            if (error.status == 401 || error.status == 400) {
+              this.wrongPassword = true;
+              this.loginForm.reset();
             }
-          }
+            throw error;
+          })
+        )
+        .subscribe({
+          next: (res) => {
+            console.log('response received');
+            if (res.ok) {
+              switch (res.body?.userDetails.role) {
+                case 'SchoolSuperAdmin':
+                  this.router.navigate(['dashboard']);
+                  this.authService.loginStatus.set(true);
+                  this.authService.userRole.set(res.body.userDetails.role);
+                  break;
+              }
+            }
+          },
         });
     }
   }

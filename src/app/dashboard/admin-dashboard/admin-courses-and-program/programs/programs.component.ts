@@ -30,6 +30,12 @@ export class ProgramsComponent {
   expandedProgramId: number | undefined | null;
   allCourses: CourseResponse = [];
 
+  constructor() {
+    this.coursesGroup.valueChanges.subscribe((data) => {
+      console.log(data);
+    });
+  }
+
   toggleExpandedProgram(programId: number) {
     if (this.expandedProgramId == programId) {
       this.expandedProgramId = null;
@@ -53,8 +59,9 @@ export class ProgramsComponent {
         validators: [Validators.required],
       },
     ],
-    courses: this.formBuilder.group({}),
   });
+
+  coursesGroup = this.formBuilder.group({});
 
   ngOnInit(): void {
     this.http.getAllPrograms().subscribe({
@@ -71,12 +78,12 @@ export class ProgramsComponent {
     if (
       this.form.value.name &&
       this.form.value.description &&
-      this.form.value.courses
+      this.coursesGroup
     ) {
       const requestBody = {
         name: this.form.value.name,
         description: this.form.value.description,
-        courses: Object.entries(this.form.value.courses)
+        courses: Object.entries(this.coursesGroup.value)
           .filter(([id, checked]) => checked)
           .map(([id]) => {
             return {
@@ -104,14 +111,13 @@ export class ProgramsComponent {
 
   openModal() {
     this.http.getAllCourses().subscribe((data) => {
-      this.allCourses = data;
-
-      const courseControls = this.allCourses.reduce((acc, course) => {
+      const courseControls = data.reduce((acc, course) => {
         acc[course.id] = new FormControl(false);
         return acc;
       }, {} as Record<string, FormControl>);
 
-      this.form.setControl('courses', this.formBuilder.group(courseControls));
+      this.coursesGroup = this.formBuilder.group(courseControls);
+      this.allCourses = data;
     });
     this.dialogForm.nativeElement.reset();
     this.dialog.nativeElement.showModal();
@@ -143,7 +149,7 @@ export class ProgramsComponent {
 
       console.log(courseControls);
 
-      this.form.setControl('courses', this.formBuilder.group(courseControls));
+      this.coursesGroup = this.formBuilder.group(courseControls);
     });
     this.programToEdit = id;
   }
@@ -153,12 +159,12 @@ export class ProgramsComponent {
       this.form.value.name &&
       this.form.value.description &&
       this.programToEdit &&
-      this.form.value.courses
+      this.coursesGroup
     ) {
       const requestBody = {
         name: this.form.value.name,
         description: this.form.value.description,
-        courses: Object.entries(this.form.value.courses)
+        courses: Object.entries(this.coursesGroup.value)
           .filter(([id, checked]) => checked)
           .map(([id]) => {
             return {
@@ -166,16 +172,6 @@ export class ProgramsComponent {
             };
           }),
       };
-
-      const c = Object.entries(this.form.value.courses)
-        .filter(([id, checked]) => checked)
-        .map(([id]) => {
-          return {
-            id: Number(id),
-          };
-        });
-
-      console.log(c);
 
       console.log(this.programToEdit);
 

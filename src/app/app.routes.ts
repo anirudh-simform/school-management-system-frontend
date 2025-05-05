@@ -12,6 +12,9 @@ import { AdminCoursesAndProgramComponent } from './dashboard/admin-dashboard/adm
 import { CoursesAndProgramsOverviewComponent } from './dashboard/admin-dashboard/admin-courses-and-program/courses-and-programs-overview/courses-and-programs-overview.component';
 import { CoursesComponent } from './dashboard/admin-dashboard/admin-courses-and-program/courses/courses.component';
 import { ProgramsComponent } from './dashboard/admin-dashboard/admin-courses-and-program/programs/programs.component';
+import { AdminUserManagementComponent } from './dashboard/admin-dashboard/admin-user-management/admin-user-management.component';
+import { UserManagementOverviewComponent } from './dashboard/admin-dashboard/admin-user-management/user-management-overview/user-management-overview.component';
+import { StudentBatchComponent } from './dashboard/admin-dashboard/admin-configure/student-batch/student-batch.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -31,6 +34,7 @@ export const routes: Routes = [
             component: ConfigurationOverviewComponent,
           },
           { path: 'department', component: DepartmentComponent },
+          { path: 'student-batch', component: StudentBatchComponent },
         ],
       },
       {
@@ -41,6 +45,11 @@ export const routes: Routes = [
           { path: 'courses', component: CoursesComponent },
           { path: 'programs', component: ProgramsComponent },
         ],
+      },
+      {
+        path: 'user-management',
+        component: AdminUserManagementComponent,
+        children: [{ path: '', component: UserManagementOverviewComponent }],
       },
     ],
   },

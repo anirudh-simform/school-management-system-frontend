@@ -8,6 +8,11 @@ import { type ProgramResponse } from './dashboard/admin-dashboard/admin-courses-
 import { type CourseResponse } from './dashboard/admin-dashboard/admin-courses-and-program/courses/courses.model';
 import { type UpdateProgramResponse } from './dashboard/admin-dashboard/admin-courses-and-program/programs/programs.model';
 import { type deletedProgramResponse } from './dashboard/admin-dashboard/admin-courses-and-program/programs/programs.model';
+import { type GetAllStudentBatchesResponse } from './dashboard/admin-dashboard/admin-configure/student-batch/student-batch.model';
+import { type StudentBatchCreateResponse } from './dashboard/admin-dashboard/admin-configure/student-batch/student-batch.model';
+import { type StudentBatchRequest } from './dashboard/admin-dashboard/admin-configure/student-batch/student-batch.model';
+import { type StudentBatchUpdateResponse } from './dashboard/admin-dashboard/admin-configure/student-batch/student-batch.model';
+import { type StudentBatchDeletedResponse } from './dashboard/admin-dashboard/admin-configure/student-batch/student-batch.model';
 
 @Injectable({
   providedIn: 'root',
@@ -138,6 +143,38 @@ export class HttpService {
   deleteProgram(id: number) {
     return this.http.delete<deletedProgramResponse>(
       this.baseUrl + `/program/${id}`,
+      { withCredentials: true }
+    );
+  }
+
+  getAllStudentBatches() {
+    return this.http.get<GetAllStudentBatchesResponse>(
+      this.baseUrl + '/studentBatch/',
+      { withCredentials: true }
+    );
+  }
+
+  createStudentBatch(body: StudentBatchRequest) {
+    console.log('inside student batch');
+    return this.http.post<StudentBatchCreateResponse>(
+      this.baseUrl + '/studentBatch/',
+      body,
+      { withCredentials: true }
+    );
+  }
+
+  editStudentBatch(id: number, body: StudentBatchRequest) {
+    console.log(this.baseUrl + `/studentBatch/${id}`);
+    return this.http.put<StudentBatchUpdateResponse>(
+      this.baseUrl + `/studentBatch/${id}`,
+      body,
+      { withCredentials: true }
+    );
+  }
+
+  deleteStudentBatch(id: number) {
+    return this.http.delete<StudentBatchDeletedResponse>(
+      this.baseUrl + `/studentBatch/${id}`,
       { withCredentials: true }
     );
   }

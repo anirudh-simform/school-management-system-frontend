@@ -14,6 +14,7 @@ import { CoursesComponent } from './dashboard/admin-dashboard/admin-courses-and-
 import { ProgramsComponent } from './dashboard/admin-dashboard/admin-courses-and-program/programs/programs.component';
 import { AdminUserManagementComponent } from './dashboard/admin-dashboard/admin-user-management/admin-user-management.component';
 import { UserManagementOverviewComponent } from './dashboard/admin-dashboard/admin-user-management/user-management-overview/user-management-overview.component';
+import { StudentBatchComponent } from './dashboard/admin-dashboard/admin-configure/student-batch/student-batch.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -33,6 +34,7 @@ export const routes: Routes = [
             component: ConfigurationOverviewComponent,
           },
           { path: 'department', component: DepartmentComponent },
+          { path: 'student-batch', component: StudentBatchComponent },
         ],
       },
       {

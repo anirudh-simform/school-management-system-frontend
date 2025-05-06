@@ -53,9 +53,9 @@ export class LoginComponent {
             throw error;
           })
         )
+        // TODO: Implement other user types
         .subscribe({
           next: (res) => {
-            console.log('response received');
             if (res.ok) {
               switch (res.body?.userDetails.role) {
                 case 'SchoolSuperAdmin':

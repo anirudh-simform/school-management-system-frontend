@@ -7,7 +7,12 @@ import {
 } from '@angular/core';
 import { HttpService } from '../../../../http.service';
 import { type GetAllStudentBatchesResponse } from './student-batch.model';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  Validators,
+  AbstractControl,
+} from '@angular/forms';
 import { ProgramResponse } from '../../admin-courses-and-program/programs/programs.model';
 import { StudentBatchRequest } from './student-batch.model';
 import { DatePipe } from '@angular/common';
@@ -38,28 +43,28 @@ export class StudentBatchComponent implements OnInit {
       },
     ],
 
-    dates: this.formBuilder.group({
-      startDate: [
-        '',
-        {
-          validators: [Validators.required],
-        },
-      ],
-
-      endDate: [
-        '',
-        {
-          validators: [Validators.required],
-        },
-      ],
-    }),
-
-    program: [
-      '',
+    dates: this.formBuilder.group(
       {
-        validators: [Validators.required],
+        startDate: [
+          '',
+          {
+            validators: [Validators.required],
+          },
+        ],
+
+        endDate: [
+          '',
+          {
+            validators: [Validators.required],
+          },
+        ],
       },
-    ],
+      {
+        validators: [dateValidator],
+      }
+    ),
+
+    program: [''],
   });
 
   studentBatches: GetAllStudentBatchesResponse = [];
@@ -84,7 +89,11 @@ export class StudentBatchComponent implements OnInit {
     this.dialogForm.nativeElement.reset();
   }
 
-  onSubmit() {
+  onSubmit(event: Event) {
+    if (this.form.invalid) {
+      event.preventDefault();
+      return;
+    }
     const requestBody: StudentBatchRequest = {
       name: this.form.value.name!,
       startDate: new Date(this.form.value.dates!.startDate!),
@@ -122,7 +131,11 @@ export class StudentBatchComponent implements OnInit {
     this.batchToEdit = batchId;
   }
 
-  onEditStudentBatch() {
+  onEditStudentBatch(event: Event) {
+    if (this.form.invalid) {
+      event.preventDefault();
+      return;
+    }
     const requestBody: StudentBatchRequest = {
       name: this.form.value.name!,
       startDate: new Date(this.form.value.dates!.startDate!),
@@ -149,5 +162,25 @@ export class StudentBatchComponent implements OnInit {
     this.http.deleteStudentBatch(id).subscribe((data) => {
       this.studentBatches = data.studentBatches;
     });
+  }
+}
+
+function dateValidator(dateControl: AbstractControl) {
+  const startDate = dateControl.get('startDate')?.value as string;
+  const endDate = dateControl.get('endDate')?.value as string;
+
+  const startDateObject = new Date(startDate);
+  const endDateObject = new Date(endDate);
+
+  if (startDateObject > endDateObject) {
+    return { startDateGreaterThanEndDate: true };
+  } else if (
+    startDateObject.getTime() === endDateObject.getTime() &&
+    startDateObject.getTime() !== null &&
+    endDateObject.getTime() !== null
+  ) {
+    return { startDateEqualToEndDate: true };
+  } else {
+    return null;
   }
 }

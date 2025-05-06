@@ -44,7 +44,11 @@ export class DepartmentComponent implements OnInit {
     });
   }
 
-  onSubmit() {
+  onSubmit(event: Event) {
+    if (this.form.invalid) {
+      event.preventDefault();
+      return;
+    }
     if (this.form.value.name) {
       this.http
         .createDepartment({ name: this.form.value.name })
@@ -78,7 +82,11 @@ export class DepartmentComponent implements OnInit {
     this.modalToEdit = id;
   }
 
-  onEditDepartment() {
+  onEditDepartment(event: Event) {
+    if (this.form.invalid) {
+      event.preventDefault();
+      return;
+    }
     if (this.form.value.name && this.modalToEdit) {
       this.http
         .editDepartment(this.modalToEdit, { name: this.form.value.name })

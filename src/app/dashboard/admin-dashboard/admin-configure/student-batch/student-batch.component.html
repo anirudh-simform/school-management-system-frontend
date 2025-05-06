@@ -20,7 +20,7 @@
       class="modal-box bg-white/90 backdrop-blur-lg rounded-xl shadow-lg font-sourcesans"
       #dialogForm
       [formGroup]="form"
-      (ngSubmit)="onSubmit()"
+      (ngSubmit)="onSubmit($event)"
     >
       <h3
         class="font-playfair font-semibold text-2xl text-indigo-700 mb-4 flex items-center"
@@ -41,6 +41,11 @@
         />
       </div>
 
+      @if (form.controls.name.invalid && (form.controls.name.touched ||
+      form.controls.name.dirty)) {
+      <p class="text-red-500 text-sm mt-1 ml-1">Name is required.</p>
+      }
+
       <div id="date-inputs" formGroupName="dates">
         <div class="form-control mb-4">
           <label class="label">
@@ -53,6 +58,13 @@
             formControlName="startDate"
           />
         </div>
+
+        @if (form.controls.dates.controls.startDate.invalid &&
+        (form.controls.dates.controls.startDate.touched ||
+        form.controls.dates.controls.startDate.dirty)) {
+        <p class="text-red-500 text-sm mt-1 ml-1">Start Date is required.</p>
+        }
+
         <div class="form-control mb-4">
           <label class="label">
             <span class="label-text text-gray-700 font-medium">End Date</span>
@@ -64,7 +76,25 @@
             formControlName="endDate"
           />
         </div>
+
+        @if (form.controls.dates.controls.endDate.invalid &&
+        (form.controls.dates.controls.endDate.touched ||
+        form.controls.dates.controls.endDate.dirty)) {
+        <p class="text-red-500 text-sm mt-1 ml-1">End Date is required.</p>
+        }
       </div>
+
+      @if (form.controls.dates.invalid && (form.controls.dates.touched ||
+      form.controls.dates.dirty)) {
+      @if(form.controls.dates.hasError("startDateGreaterThanEndDate")) {
+      <p class="text-red-500 text-sm mt-1 ml-1">
+        End Date cannot be before start Date
+      </p>
+      } @else if (form.controls.dates.hasError("startDateEqualToEndDate")) {
+      <p class="text-red-500 text-sm mt-1 ml-1">
+        Start Date and End Date cannot be the same
+      </p>
+      } }
 
       <div class="form-control mb-4 flex flex-col">
         <label class="label">
@@ -100,7 +130,7 @@
       class="modal-box bg-white/90 backdrop-blur-lg rounded-xl shadow-lg font-sourcesans"
       #editDialogForm
       [formGroup]="form"
-      (ngSubmit)="onEditStudentBatch()"
+      (ngSubmit)="onEditStudentBatch($event)"
     >
       <h3
         class="font-playfair font-semibold text-2xl text-indigo-700 mb-4 flex items-center"
@@ -121,6 +151,11 @@
         />
       </div>
 
+      @if (form.controls.name.invalid && (form.controls.name.touched ||
+      form.controls.name.dirty)) {
+      <p class="text-red-500 text-sm mt-1 ml-1">Name is required.</p>
+      }
+
       <div id="date-inputs" formGroupName="dates">
         <div class="form-control mb-4">
           <label class="label">
@@ -133,6 +168,13 @@
             formControlName="startDate"
           />
         </div>
+
+        @if (form.controls.dates.controls.startDate.invalid &&
+        (form.controls.dates.controls.startDate.touched ||
+        form.controls.dates.controls.startDate.dirty)) {
+        <p class="text-red-500 text-sm mt-1 ml-1">Start Date is required.</p>
+        }
+
         <div class="form-control mb-4">
           <label class="label">
             <span class="label-text text-gray-700 font-medium">End Date</span>
@@ -144,7 +186,25 @@
             formControlName="endDate"
           />
         </div>
+
+        @if (form.controls.dates.controls.endDate.invalid &&
+        (form.controls.dates.controls.endDate.touched ||
+        form.controls.dates.controls.endDate.dirty)) {
+        <p class="text-red-500 text-sm mt-1 ml-1">End Date is required.</p>
+        }
       </div>
+
+      @if (form.controls.dates.invalid && (form.controls.dates.touched ||
+      form.controls.dates.dirty)) {
+      @if(form.controls.dates.hasError("startDateGreaterThanEndDate")) {
+      <p class="text-red-500 text-sm mt-1 ml-1">
+        End Date cannot be before start Date
+      </p>
+      } @else if (form.controls.dates.hasError("startDateEqualToEndDate")) {
+      <p class="text-red-500 text-sm mt-1 ml-1">
+        Start Date and End Date cannot be the same
+      </p>
+      } }
 
       <div class="form-control mb-4 flex flex-col">
         <label class="label">

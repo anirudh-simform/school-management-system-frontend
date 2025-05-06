@@ -18,7 +18,7 @@
     <form
       method="dialog"
       class="modal-box bg-white/90 backdrop-blur-lg rounded-xl shadow-lg font-sourcesans"
-      (ngSubmit)="onSubmit()"
+      (ngSubmit)="onSubmit($event)"
       [formGroup]="form"
       #dialogForm
     >
@@ -43,6 +43,11 @@
         />
       </div>
 
+      @if ((form.controls.name.touched || form.controls.name.dirty) &&
+      form.controls.name.invalid) {
+      <p class="text-red-500 text-sm mt-1 ml-1">Name is required.</p>
+      }
+
       <div class="modal-action">
         <button class="btn btn-ghost" (click)="closeModal($event)">
           Cancel
@@ -60,7 +65,7 @@
     <form
       method="dialog"
       class="modal-box bg-white/90 backdrop-blur-lg rounded-xl shadow-lg font-sourcesans"
-      (ngSubmit)="onEditDepartment()"
+      (ngSubmit)="onEditDepartment($event)"
       [formGroup]="form"
       #editDialogForm
     >
@@ -84,6 +89,11 @@
           formControlName="name"
         />
       </div>
+
+      @if ((form.controls.name.touched || form.controls.name.dirty) &&
+      form.controls.name.invalid) {
+      <p class="text-red-500 text-sm mt-1 ml-1">Name is required.</p>
+      }
 
       <div class="modal-action">
         <button class="btn btn-ghost" (click)="closeEditModal($event)">

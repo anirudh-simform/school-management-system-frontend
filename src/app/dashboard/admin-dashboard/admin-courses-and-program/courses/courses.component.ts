@@ -56,7 +56,11 @@ export class CoursesComponent {
     });
   }
 
-  onSubmit() {
+  onSubmit(event: Event) {
+    if (this.form.invalid) {
+      event.preventDefault();
+      return;
+    }
     if (this.form.value.name && this.form.value.description) {
       this.http
         .createCourse({
@@ -94,7 +98,11 @@ export class CoursesComponent {
     this.courseToEdit = id;
   }
 
-  onEditCourse() {
+  onEditCourse(event: Event) {
+    if (this.form.invalid) {
+      event.preventDefault();
+      return;
+    }
     if (
       this.form.value.name &&
       this.form.value.description &&

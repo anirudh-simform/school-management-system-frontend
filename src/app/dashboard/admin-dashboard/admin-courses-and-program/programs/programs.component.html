@@ -17,7 +17,7 @@
     <form
       method="dialog"
       class="modal-box bg-white/90 backdrop-blur-lg rounded-xl shadow-lg font-sourcesans"
-      (ngSubmit)="onSubmit()"
+      (ngSubmit)="onSubmit($event)"
       [formGroup]="form"
       #dialogForm
     >
@@ -40,6 +40,11 @@
         />
       </div>
 
+      @if (form.controls.name.invalid && (form.controls.name.dirty ||
+      form.controls.name.touched)) {
+      <p class="text-red-500 text-sm mt-1 ml-1">Name is required.</p>
+      }
+
       <div class="form-control mb-4">
         <label class="label">
           <span class="label-text text-gray-700 font-medium"
@@ -53,6 +58,11 @@
           formControlName="description"
         />
       </div>
+
+      @if (form.controls.description.invalid && (form.controls.description.dirty
+      || form.controls.description.touched)) {
+      <p class="text-red-500 text-sm mt-1 ml-1">Description is required.</p>
+      }
 
       <ul
         id="course-selection"
@@ -99,7 +109,7 @@
     <form
       method="dialog"
       class="modal-box bg-white/90 backdrop-blur-lg rounded-xl shadow-lg font-sourcesans"
-      (ngSubmit)="onEditProgram()"
+      (ngSubmit)="onEditProgram($event)"
       [formGroup]="form"
       #editDialogForm
     >

@@ -13,6 +13,7 @@ import { type StudentBatchCreateResponse } from './dashboard/admin-dashboard/adm
 import { type StudentBatchRequest } from './dashboard/admin-dashboard/admin-configure/student-batch/student-batch.model';
 import { type StudentBatchUpdateResponse } from './dashboard/admin-dashboard/admin-configure/student-batch/student-batch.model';
 import { type StudentBatchDeletedResponse } from './dashboard/admin-dashboard/admin-configure/student-batch/student-batch.model';
+import { type AddStudentRequest } from './dashboard/admin-dashboard/admin-user-management/user-management-student/user-management-student.model';
 
 @Injectable({
   providedIn: 'root',
@@ -177,5 +178,11 @@ export class HttpService {
       this.baseUrl + `/studentBatch/${id}`,
       { withCredentials: true }
     );
+  }
+
+  createStudent(body: AddStudentRequest) {
+    return this.http.post(this.baseUrl + '/user', body, {
+      withCredentials: true,
+    });
   }
 }

@@ -13,3 +13,14 @@ export type AddStudentRequest = {
     studentBatchId: number;
   };
 };
+
+export type AddAdminRequest = {
+  firstname: string;
+  lastname: string;
+  email: string;
+  phone: string;
+  dob: Date;
+  gender: Gender;
+  role: Role;
+  password: string;
+};

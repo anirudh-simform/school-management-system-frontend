@@ -1,37 +1,17 @@
 <div id="configurations-item-container" class="flex flex-col gap-4">
-  <div class="flex cursor-pointer w-xl" routerLink="department">
-    <div
-      class="bg-white/90 p-6 rounded-xl shadow-lg transition-all transform hover:translate-y-[-5px] hover:shadow-2xl duration-300 ease-in-out"
-    >
-      <h2
-        class="text-2xl font-playfair font-semibold text-indigo-700 mb-2 flex items-center"
-      >
-        <i class="pi pi-building mr-2 text-indigo-500"></i>
-        <span class="text-gray-700">Departments</span>
-      </h2>
-      <p class="text-gray-600 text-sm font-sourcesans">
-        Manage the various academic departments across your institution. Add new
-        departments, modify existing ones, or reorganize them for better
-        structure and clarity.
-      </p>
-    </div>
-  </div>
+  <app-overview-item
+    title="Departments"
+    description="Manage the various academic departments across your institution. Add new
+  departments, modify existing ones, or reorganize them for better
+  structure and clarity."
+    routerLinkPath="department"
+  />
 
-  <div class="flex cursor-pointer w-xl" routerLink="student-batch">
-    <div
-      class="bg-white/90 p-6 rounded-xl shadow-lg transition-all transform hover:translate-y-[-5px] hover:shadow-2xl duration-300 ease-in-out"
-    >
-      <h2
-        class="text-2xl font-playfair font-semibold text-indigo-700 mb-2 flex items-center"
-      >
-        <i class="pi pi-id-card mr-2 text-indigo-500"></i>
-        <span class="text-gray-700">Student Batch</span>
-      </h2>
-      <p class="text-gray-600 text-sm font-sourcesans">
-        Manage the various Student Batches in your institution. Add new batches,
-        modify existing ones, or reorganize them for better structure and
-        clarity.
-      </p>
-    </div>
-  </div>
+  <app-overview-item
+    title="Student Batch"
+    description=" Manage the various Student Batches in your institution. Add new batches,
+  modify existing ones, or reorganize them for better structure and
+  clarity."
+    routerLinkPath="student-batch"
+  />
 </div>

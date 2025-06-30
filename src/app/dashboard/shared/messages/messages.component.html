@@ -1,5 +1,6 @@
-<div class="w-full h-full">
-  <aside class="p-4 h-full">
+<div class="w-full h-full m-6 flex">
+  <aside class="p-4 h-full rounded-md border-amber-400 border-2 w-64">
+    <!-- Search Bar-->
     <label class="input">
       <svg
         class="h-[1em] opacity-50"
@@ -20,8 +21,7 @@
       <input type="search" class="grow" placeholder="Search" />
     </label>
 
-    <!-- Chats -->
-
+    <!-- Chats List -->
     <ul class="list">
       <li class="list-row">
         <div>
@@ -32,11 +32,41 @@
         </div>
         <div>
           <div>Dio Lupa</div>
-          <div class="text-xs uppercase font-semibold opacity-60">
-            Remaining Reason
-          </div>
+          <div class="text-xs font-semibold opacity-60">Remaining Reason</div>
         </div>
       </li>
     </ul>
   </aside>
+
+  <!-- Chat -->
+  <main class="flex-1 overflow-y-auto shadow-lg flex flex-col">
+    <div id="chat-title-bar" class="flex gap-4 bg-slate-200 p-4 rounded-sm">
+      <div>
+        <img
+          class="size-10 rounded-box"
+          src="https://img.daisyui.com/images/profile/demo/1@94.webp"
+        />
+      </div>
+      <div>
+        <div>Dio Lupa</div>
+        <div
+          id="status"
+          class="text-xs text-emerald-500 font-semibold opacity-60"
+        >
+          Online
+        </div>
+      </div>
+    </div>
+
+    <div id="messages" class="flex-1"></div>
+
+    <div id="message-input" class="flex gap-2 sticky bottom-0 w-full px-6 py-4">
+      <input type="text" class="input flex-1" />
+      <button
+        class="rounded-[50%] bg-emerald-500 text-white w-10 h-10 cursor-pointer hover:bg-emerald-700"
+      >
+        <i class="pi pi-send"></i>
+      </button>
+    </div>
+  </main>
 </div>

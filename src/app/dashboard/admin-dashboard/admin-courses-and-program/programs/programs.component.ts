@@ -74,7 +74,11 @@ export class ProgramsComponent {
     });
   }
 
-  onSubmit() {
+  onSubmit(event: Event) {
+    if (this.form.invalid) {
+      event.preventDefault();
+      return;
+    }
     if (
       this.form.value.name &&
       this.form.value.description &&
@@ -154,7 +158,12 @@ export class ProgramsComponent {
     this.programToEdit = id;
   }
 
-  onEditProgram() {
+  onEditProgram(event: Event) {
+    if (this.form.invalid) {
+      event.preventDefault();
+      return;
+    }
+
     if (
       this.form.value.name &&
       this.form.value.description &&

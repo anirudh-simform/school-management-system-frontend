@@ -15,6 +15,9 @@ import { ProgramsComponent } from './dashboard/admin-dashboard/admin-courses-and
 import { AdminUserManagementComponent } from './dashboard/admin-dashboard/admin-user-management/admin-user-management.component';
 import { UserManagementOverviewComponent } from './dashboard/admin-dashboard/admin-user-management/user-management-overview/user-management-overview.component';
 import { StudentBatchComponent } from './dashboard/admin-dashboard/admin-configure/student-batch/student-batch.component';
+import { UserManagementStudentComponent } from './dashboard/admin-dashboard/admin-user-management/user-management-student/user-management-student.component';
+import { UserManagementAdminComponent } from './dashboard/admin-dashboard/admin-user-management/user-management-admin/user-management-admin.component';
+import { MessagesComponent } from './dashboard/shared/messages/messages.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -49,8 +52,13 @@ export const routes: Routes = [
       {
         path: 'user-management',
         component: AdminUserManagementComponent,
-        children: [{ path: '', component: UserManagementOverviewComponent }],
+        children: [
+          { path: '', component: UserManagementOverviewComponent },
+          { path: 'student', component: UserManagementStudentComponent },
+          { path: 'admin', component: UserManagementAdminComponent },
+        ],
       },
+      { path: 'message', component: MessagesComponent },
     ],
   },
   { path: 'autherror', component: UnauthenticatedComponent },

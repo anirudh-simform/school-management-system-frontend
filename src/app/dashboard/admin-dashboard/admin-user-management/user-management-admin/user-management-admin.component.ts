@@ -6,10 +6,9 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import validator from 'validator';
-import { HttpService } from '../../../../http.service';
-import { GetAllStudentBatchesResponse } from '../../admin-configure/student-batch/student-batch.model';
 import { Gender, Role } from '../admin-user-management.model';
 import { AddAdminRequest } from '../user-management-student/user-management-student.model';
+import { UserService } from '../service/user.service';
 
 @Component({
   selector: 'app-user-management-admin',
@@ -21,7 +20,7 @@ export class UserManagementAdminComponent {
   @ViewChild('dialog') private dialog!: ElementRef<HTMLDialogElement>;
   @ViewChild('dialogForm') private dialogForm!: ElementRef<HTMLFormElement>;
 
-  private http = inject(HttpService);
+  private http = inject(UserService);
 
   formBuilder = new FormBuilder();
 

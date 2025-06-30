@@ -1,5 +1,5 @@
 import { Component, ElementRef, inject, ViewChild } from '@angular/core';
-import { HttpService } from '../../../../http.service';
+
 import {
   FormBuilder,
   FormControl,
@@ -10,6 +10,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ProgramResponse } from './programs.model';
 import { CourseResponse } from '../courses/courses.model';
 import { ArrayElement } from '../../../../app.model';
+import { ProgramService } from './service/program.service';
+import { CourseService } from '../courses/service/course.service';
 
 @Component({
   selector: 'app-programs',
@@ -19,7 +21,9 @@ import { ArrayElement } from '../../../../app.model';
 })
 export class ProgramsComponent {
   // TODO: Update to latest information
-  private http = inject(HttpService);
+  private programService = inject(ProgramService);
+  private courseService = inject(CourseService);
+
   @ViewChild('dialog') private dialog!: ElementRef<HTMLDialogElement>;
   @ViewChild('dialogForm') private dialogForm!: ElementRef<HTMLFormElement>;
   @ViewChild('editDialog') private editDialog!: ElementRef<HTMLDialogElement>;
@@ -64,7 +68,7 @@ export class ProgramsComponent {
   coursesGroup = this.formBuilder.group({});
 
   ngOnInit(): void {
-    this.http.getAllPrograms().subscribe({
+    this.programService.getAllPrograms().subscribe({
       next: (programs) => {
         this.programs = programs;
       },
@@ -95,7 +99,7 @@ export class ProgramsComponent {
             };
           }),
       };
-      this.http.createProgram(requestBody).subscribe((data) => {
+      this.programService.createProgram(requestBody).subscribe((data) => {
         this.programs = data.programs;
       });
     }
@@ -114,7 +118,7 @@ export class ProgramsComponent {
   }
 
   openModal() {
-    this.http.getAllCourses().subscribe((data) => {
+    this.courseService.getAllCourses().subscribe((data) => {
       const courseControls = data.reduce((acc, course) => {
         acc[course.id] = new FormControl(false);
         return acc;
@@ -136,7 +140,7 @@ export class ProgramsComponent {
     this.editDialog.nativeElement.showModal();
     this.form.controls.name.setValue(name);
     this.form.controls.description.setValue(description);
-    this.http.getAllCourses().subscribe((data) => {
+    this.courseService.getAllCourses().subscribe((data) => {
       this.allCourses = data;
 
       const selectedCourseIds = courses.map((course) => course.id);
@@ -184,7 +188,7 @@ export class ProgramsComponent {
 
       console.log(this.programToEdit);
 
-      this.http
+      this.programService
         .editProgram(this.programToEdit, requestBody)
         .subscribe((data) => {
           console.log(data);
@@ -194,7 +198,7 @@ export class ProgramsComponent {
   }
 
   deleteProgram(id: number) {
-    this.http.deleteProgram(id).subscribe((data) => {
+    this.programService.deleteProgram(id).subscribe((data) => {
       this.programs = data.programs;
       console.log(data);
     });

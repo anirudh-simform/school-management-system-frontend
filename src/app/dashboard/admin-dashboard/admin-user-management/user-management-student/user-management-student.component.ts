@@ -3,10 +3,12 @@ import { ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { GetAllStudentBatchesResponse } from '../../admin-configure/student-batch/student-batch.model';
-import { HttpService } from '../../../../http.service';
+
 import { ReactiveFormsModule } from '@angular/forms';
 import validator from 'validator';
 import { Gender, Role } from '../admin-user-management.model';
+import { UserService } from '../service/user.service';
+import { StudentBatchService } from '../../admin-configure/student-batch/service/student-batch.service';
 @Component({
   selector: 'app-user-management-student',
   imports: [ReactiveFormsModule],
@@ -18,7 +20,8 @@ export class UserManagementStudentComponent {
   @ViewChild('dialogForm') private dialogForm!: ElementRef<HTMLFormElement>;
   studentBatches: GetAllStudentBatchesResponse = [];
 
-  private http = inject(HttpService);
+  private userService = inject(UserService);
+  private studentBatchService = inject(StudentBatchService);
 
   formBuilder = new FormBuilder();
 
@@ -95,7 +98,7 @@ export class UserManagementStudentComponent {
   });
 
   openModal() {
-    this.http.getAllStudentBatches().subscribe((data) => {
+    this.studentBatchService.getAllStudentBatches().subscribe((data) => {
       this.studentBatches = data;
       this.form.reset();
 
@@ -129,7 +132,7 @@ export class UserManagementStudentComponent {
         studentBatchId: Number(this.form.value.studentBatch!),
       },
     };
-    this.http.createStudent(requestBody).subscribe((data) => {
+    this.userService.createStudent(requestBody).subscribe((data) => {
       console.log(data);
     });
   }

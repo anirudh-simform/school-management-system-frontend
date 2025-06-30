@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthStatusService } from '../auth-status.service';
-import { HttpService } from '../http.service';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-home',
@@ -11,7 +11,7 @@ import { HttpService } from '../http.service';
 })
 export class HomeComponent implements OnInit {
   authStatusService = inject(AuthStatusService);
-  private http = inject(HttpService);
+  private http = inject(AuthService);
 
   ngOnInit(): void {
     this.http.authCheck().subscribe({

@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { OnInit } from '@angular/core';
-import { HttpService } from '../../../../http.service';
 import { ViewChild } from '@angular/core';
 import { ElementRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Validators } from '@angular/forms';
+import { DepartmentService } from './service/department.service';
 
 @Component({
   selector: 'app-department',
@@ -14,7 +14,7 @@ import { Validators } from '@angular/forms';
   styleUrl: './department.component.css',
 })
 export class DepartmentComponent implements OnInit {
-  private http = inject(HttpService);
+  private http = inject(DepartmentService);
   @ViewChild('dialog') private dialog!: ElementRef<HTMLDialogElement>;
   @ViewChild('dialogForm') private dialogForm!: ElementRef<HTMLFormElement>;
   @ViewChild('editDialog') private editDialog!: ElementRef<HTMLDialogElement>;

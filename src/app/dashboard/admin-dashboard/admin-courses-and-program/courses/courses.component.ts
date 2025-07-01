@@ -1,7 +1,7 @@
 import { Component, ElementRef, inject, ViewChild } from '@angular/core';
-import { HttpService } from '../../../../http.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CourseService } from './service/course.service';
 
 @Component({
   selector: 'app-courses',
@@ -10,7 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   styleUrl: './courses.component.css',
 })
 export class CoursesComponent {
-  private http = inject(HttpService);
+  private http = inject(CourseService);
   @ViewChild('dialog') private dialog!: ElementRef<HTMLDialogElement>;
   @ViewChild('dialogForm') private dialogForm!: ElementRef<HTMLFormElement>;
   @ViewChild('editDialog') private editDialog!: ElementRef<HTMLDialogElement>;

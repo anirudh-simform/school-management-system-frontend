@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink, RouterOutlet, RouterLinkActive } from '@angular/router';
-import { HttpService } from '../../http.service';
 import { AdminDashboardPageComponent } from './admin-dashboard-page/admin-dashboard-page.component';
+import { AuthService } from '../../auth.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -15,7 +15,7 @@ import { AdminDashboardPageComponent } from './admin-dashboard-page/admin-dashbo
   styleUrl: './admin-dashboard.component.css',
 })
 export class AdminDashboardComponent {
-  private http = inject(HttpService);
+  private http = inject(AuthService);
 
   onLogout() {
     this.http.logout();

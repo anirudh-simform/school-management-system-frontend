@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HttpService } from '../http.service';
 import { AuthStatusService } from '../auth-status.service';
 import { Validators } from '@angular/forms';
 import { catchError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +16,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class LoginComponent {
   private formBuilder = inject(FormBuilder);
   private router = inject(Router);
-  private http = inject(HttpService);
+  private http = inject(AuthService);
   wrongPassword = false;
   loginForm = this.formBuilder.group({
     email: [

@@ -5,7 +5,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { HttpService } from '../../../../http.service';
+
 import { type GetAllStudentBatchesResponse } from './student-batch.model';
 import {
   ReactiveFormsModule,
@@ -16,6 +16,8 @@ import {
 import { ProgramResponse } from '../../admin-courses-and-program/programs/programs.model';
 import { StudentBatchRequest } from './student-batch.model';
 import { DatePipe } from '@angular/common';
+import { StudentBatchService } from './service/student-batch.service';
+import { ProgramService } from '../../admin-courses-and-program/programs/service/program.service';
 
 @Component({
   selector: 'app-student-batch',
@@ -24,7 +26,8 @@ import { DatePipe } from '@angular/common';
   styleUrl: './student-batch.component.css',
 })
 export class StudentBatchComponent implements OnInit {
-  private http = inject(HttpService);
+  private studentBatchService = inject(StudentBatchService);
+  private programService = inject(ProgramService);
   @ViewChild('dialog') private dialog!: ElementRef<HTMLDialogElement>;
   @ViewChild('dialogForm') private dialogForm!: ElementRef<HTMLFormElement>;
   @ViewChild('editDialog') private editDialog!: ElementRef<HTMLDialogElement>;
@@ -70,13 +73,13 @@ export class StudentBatchComponent implements OnInit {
   studentBatches: GetAllStudentBatchesResponse = [];
 
   ngOnInit(): void {
-    this.http.getAllStudentBatches().subscribe((data) => {
+    this.studentBatchService.getAllStudentBatches().subscribe((data) => {
       this.studentBatches = data;
     });
   }
 
   openModal() {
-    this.http.getAllPrograms().subscribe((data) => {
+    this.programService.getAllPrograms().subscribe((data) => {
       this.allPrograms = data;
       console.log(data);
       this.dialog.nativeElement.showModal();
@@ -101,9 +104,11 @@ export class StudentBatchComponent implements OnInit {
       programId: Number(this.form.value.program!),
     };
 
-    this.http.createStudentBatch(requestBody).subscribe((data) => {
-      this.studentBatches = data.studentBatches;
-    });
+    this.studentBatchService
+      .createStudentBatch(requestBody)
+      .subscribe((data) => {
+        this.studentBatches = data.studentBatches;
+      });
 
     this.dialog.nativeElement.close();
     this.dialogForm.nativeElement.reset();
@@ -123,7 +128,7 @@ export class StudentBatchComponent implements OnInit {
     this.form.controls.dates.controls.startDate.setValue(formattedStartDate);
     this.form.controls.dates.controls.endDate.setValue(formattedEndDate);
     this.form.controls.program.setValue(programId.toString());
-    this.http.getAllPrograms().subscribe((data) => {
+    this.programService.getAllPrograms().subscribe((data) => {
       this.allPrograms = data;
       console.log(data);
       this.editDialog.nativeElement.showModal();
@@ -144,7 +149,7 @@ export class StudentBatchComponent implements OnInit {
     };
 
     if (this.batchToEdit) {
-      this.http
+      this.studentBatchService
         .editStudentBatch(this.batchToEdit, requestBody)
         .subscribe((data) => {
           this.studentBatches = data.studentBatches;
@@ -159,7 +164,7 @@ export class StudentBatchComponent implements OnInit {
   }
 
   onDeleteStudentBatch(id: number) {
-    this.http.deleteStudentBatch(id).subscribe((data) => {
+    this.studentBatchService.deleteStudentBatch(id).subscribe((data) => {
       this.studentBatches = data.studentBatches;
     });
   }

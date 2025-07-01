@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { BASE_URL } from '../../../../../app.config';
-import { CourseResponse } from '../courses.model';
+import { CourseQueryParams, CourseResponse } from '../courses.model';
 
 @Injectable({
   providedIn: 'root',
@@ -12,9 +12,10 @@ export class CourseService {
   private http = inject(HttpClient);
   constructor() {}
 
-  getAllCourses() {
+  getAllCourses(queryParams?: CourseQueryParams) {
     return this.http.get<CourseResponse>(this.baseUrl + '/course', {
       withCredentials: true,
+      params: queryParams,
     });
   }
 

@@ -23,7 +23,6 @@ export class ProgramsComponent {
   // TODO: Update to latest information
   private programService = inject(ProgramService);
   private courseService = inject(CourseService);
-
   @ViewChild('dialog') private dialog!: ElementRef<HTMLDialogElement>;
   @ViewChild('dialogForm') private dialogForm!: ElementRef<HTMLFormElement>;
   @ViewChild('editDialog') private editDialog!: ElementRef<HTMLDialogElement>;
@@ -32,14 +31,12 @@ export class ProgramsComponent {
   private programToEdit: number | undefined;
   programs: ProgramResponse['programs'] = [];
   expandedProgramId: number | undefined | null;
-  allCourses: CourseResponse = [];
-
+  allCourses: CourseResponse['courses'] = [];
   constructor() {
     this.coursesGroup.valueChanges.subscribe((data) => {
       console.log(data);
     });
   }
-
   toggleExpandedProgram(programId: number) {
     if (this.expandedProgramId == programId) {
       this.expandedProgramId = null;
@@ -47,7 +44,6 @@ export class ProgramsComponent {
       this.expandedProgramId = programId;
     }
   }
-
   formBuilder = new FormBuilder();
   form = this.formBuilder.group({
     name: [
@@ -56,7 +52,6 @@ export class ProgramsComponent {
         validators: [Validators.required],
       },
     ],
-
     description: [
       '',
       {
@@ -64,9 +59,7 @@ export class ProgramsComponent {
       },
     ],
   });
-
   coursesGroup = this.formBuilder.group({});
-
   ngOnInit(): void {
     this.programService.getAllPrograms().subscribe({
       next: (programs) => {
@@ -77,7 +70,6 @@ export class ProgramsComponent {
       },
     });
   }
-
   onSubmit(event: Event) {
     if (this.form.invalid) {
       event.preventDefault();
@@ -104,33 +96,28 @@ export class ProgramsComponent {
       });
     }
   }
-
   closeModal(event: MouseEvent) {
     event.preventDefault();
     this.dialog.nativeElement.close();
     this.dialogForm.nativeElement.reset();
   }
-
   closeEditModal(event: MouseEvent) {
     event.preventDefault();
     this.editDialog.nativeElement.close();
     this.editDialogForm.nativeElement.reset();
   }
-
   openModal() {
     this.courseService.getAllCourses().subscribe((data) => {
-      const courseControls = data.reduce((acc, course) => {
+      const courseControls = data['courses'].reduce((acc, course) => {
         acc[course.id] = new FormControl(false);
         return acc;
       }, {} as Record<string, FormControl>);
-
       this.coursesGroup = this.formBuilder.group(courseControls);
-      this.allCourses = data;
+      this.allCourses = data['courses'];
     });
     this.dialogForm.nativeElement.reset();
     this.dialog.nativeElement.showModal();
   }
-
   openEditModal(
     id: number,
     name: string,
@@ -141,33 +128,26 @@ export class ProgramsComponent {
     this.form.controls.name.setValue(name);
     this.form.controls.description.setValue(description);
     this.courseService.getAllCourses().subscribe((data) => {
-      this.allCourses = data;
-
+      this.allCourses = data['courses'];
       const selectedCourseIds = courses.map((course) => course.id);
-
       const courseControls = this.allCourses.reduce((acc, course) => {
         let checkedStatus = false;
-
         if (selectedCourseIds.includes(course.id)) {
           checkedStatus = true;
         }
         acc[course.id] = new FormControl(checkedStatus);
         return acc;
       }, {} as Record<string, FormControl>);
-
       console.log(courseControls);
-
       this.coursesGroup = this.formBuilder.group(courseControls);
     });
     this.programToEdit = id;
   }
-
   onEditProgram(event: Event) {
     if (this.form.invalid) {
       event.preventDefault();
       return;
     }
-
     if (
       this.form.value.name &&
       this.form.value.description &&
@@ -185,9 +165,7 @@ export class ProgramsComponent {
             };
           }),
       };
-
       console.log(this.programToEdit);
-
       this.programService
         .editProgram(this.programToEdit, requestBody)
         .subscribe((data) => {
@@ -196,7 +174,6 @@ export class ProgramsComponent {
         });
     }
   }
-
   deleteProgram(id: number) {
     this.programService.deleteProgram(id).subscribe((data) => {
       this.programs = data.programs;

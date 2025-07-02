@@ -1,4 +1,10 @@
-import { Component, ElementRef, inject, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 
 import {
   FormBuilder,
@@ -7,43 +13,72 @@ import {
   Validators,
 } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ProgramResponse } from './programs.model';
+import { GetAllProgramsResponse } from './programs.model';
 import { CourseResponse } from '../courses/courses.model';
 import { ArrayElement } from '../../../../app.model';
 import { ProgramService } from './service/program.service';
 import { CourseService } from '../courses/service/course.service';
+import { MultiSelectFilterEvent, MultiSelectModule } from 'primeng/multiselect';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  Subject,
+  switchMap,
+  tap,
+} from 'rxjs';
+import { TableLazyLoadEvent, TableModule } from 'primeng/table';
+import { JsonPipe } from '@angular/common';
+import { ListboxModule } from 'primeng/listbox';
+import { PopoverModule } from 'primeng/popover';
 
 @Component({
   selector: 'app-programs',
-  imports: [ReactiveFormsModule],
+  imports: [
+    ReactiveFormsModule,
+    MultiSelectModule,
+    TableModule,
+    ListboxModule,
+    PopoverModule,
+  ],
   templateUrl: './programs.component.html',
   styleUrl: './programs.component.css',
 })
-export class ProgramsComponent {
+export class ProgramsComponent implements OnInit {
   // TODO: Update to latest information
   private programService = inject(ProgramService);
   private courseService = inject(CourseService);
+
   @ViewChild('dialog') private dialog!: ElementRef<HTMLDialogElement>;
   @ViewChild('dialogForm') private dialogForm!: ElementRef<HTMLFormElement>;
   @ViewChild('editDialog') private editDialog!: ElementRef<HTMLDialogElement>;
   @ViewChild('editDialogForm')
   private editDialogForm!: ElementRef<HTMLFormElement>;
+
   private programToEdit: number | undefined;
-  programs: ProgramResponse['programs'] = [];
+
+  programs: GetAllProgramsResponse['programs'] = [];
   expandedProgramId: number | undefined | null;
   allCourses: CourseResponse['courses'] = [];
+
+  loadingCourses = false;
+  private filterService = new Subject<string>();
+
+  private lazyLoadingSubject = new Subject<TableLazyLoadEvent>();
+  private lastEvent: TableLazyLoadEvent | null = null;
+  totalCount = 0;
+  searchControl = new FormControl<string>('');
+  loading = true;
+
   constructor() {
     this.coursesGroup.valueChanges.subscribe((data) => {
       console.log(data);
     });
+
+    this.searchControl.valueChanges.subscribe((val) => {
+      console.log(val);
+    });
   }
-  toggleExpandedProgram(programId: number) {
-    if (this.expandedProgramId == programId) {
-      this.expandedProgramId = null;
-    } else {
-      this.expandedProgramId = programId;
-    }
-  }
+
   formBuilder = new FormBuilder();
   form = this.formBuilder.group({
     name: [
@@ -58,43 +93,98 @@ export class ProgramsComponent {
         validators: [Validators.required],
       },
     ],
+    selectedCourses: [[] as number[]],
   });
   coursesGroup = this.formBuilder.group({});
+
   ngOnInit(): void {
-    this.programService.getAllPrograms().subscribe({
-      next: (programs) => {
-        this.programs = programs;
-      },
-      error: (error) => {
-        console.log(error);
-      },
-    });
+    // this.programService.getAllPrograms().subscribe({
+    //   next: (programs) => {
+    //     this.programs = programs;
+    //   },
+    //   error: (error) => {
+    //     console.log(error);
+    //   },
+    // });
+
+    this.searchControl.valueChanges
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        tap(() => this.tableReload())
+      )
+      .subscribe();
+
+    this.lazyLoadingSubject
+      .pipe(
+        tap(() => (this.loading = true)),
+        switchMap((event: TableLazyLoadEvent) => {
+          const pageNumber = event.first! / event.rows! + 1;
+          const pageSize = event.rows!;
+          const query = this.searchControl.value || '';
+
+          const queryParams = {
+            name: query,
+            pageNumber: pageNumber,
+            pageSize: pageSize,
+          };
+
+          return this.programService.getAllPrograms(queryParams);
+        })
+        // tap(() => (this.loading = false))
+      )
+      .subscribe((response) => {
+        this.programs = response.programs;
+        this.totalCount = response.totalCount;
+        console.log(response);
+        console.log(this.programs);
+        this.loading = false;
+      });
+
+    this.filterService
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((query) => {
+          this.loadingCourses = true;
+          return this.courseService.getAllCourses({ name: query });
+        })
+      )
+      .subscribe((response) => {
+        this.loadingCourses = false;
+        console.log(response.courses);
+        this.allCourses = response.courses;
+      });
   }
+
   onSubmit(event: Event) {
     if (this.form.invalid) {
       event.preventDefault();
       return;
     }
-    if (
-      this.form.value.name &&
-      this.form.value.description &&
-      this.coursesGroup
-    ) {
+
+    if (this.form.value) {
       const requestBody = {
-        name: this.form.value.name,
-        description: this.form.value.description,
-        courses: Object.entries(this.coursesGroup.value)
-          .filter(([id, checked]) => checked)
-          .map(([id]) => {
-            return {
-              id: Number(id),
-            };
-          }),
+        name: this.form.controls.name.value!,
+        description: this.form.controls.description.value!,
+        courses: this.form.controls.selectedCourses.value!,
       };
-      this.programService.createProgram(requestBody).subscribe((data) => {
-        this.programs = data.programs;
-      });
+      console.log(requestBody);
+      this.programService
+        .createProgram(requestBody)
+        .pipe(tap(() => this.tableReload()))
+        .subscribe((data) => {
+          console.log(data);
+        });
     }
+
+    console.log(this.form.value);
+  }
+
+  onCourseFilter(event: MultiSelectFilterEvent) {
+    const query: string = event.filter;
+    console.log(event);
+    this.filterService.next(query);
   }
   closeModal(event: MouseEvent) {
     event.preventDefault();
@@ -107,14 +197,15 @@ export class ProgramsComponent {
     this.editDialogForm.nativeElement.reset();
   }
   openModal() {
-    this.courseService.getAllCourses().subscribe((data) => {
-      const courseControls = data['courses'].reduce((acc, course) => {
-        acc[course.id] = new FormControl(false);
-        return acc;
-      }, {} as Record<string, FormControl>);
-      this.coursesGroup = this.formBuilder.group(courseControls);
-      this.allCourses = data['courses'];
-    });
+    // this.courseService.getAllCourses().subscribe((data) => {
+    //   const courseControls = data['courses'].reduce((acc, course) => {
+    //     acc[course.id] = new FormControl(false);
+    //     return acc;
+    //   }, {} as Record<string, FormControl>);
+    //   this.coursesGroup = this.formBuilder.group(courseControls);
+    //   this.allCourses = data['courses'];
+    // });
+    this.filterService.next('');
     this.dialogForm.nativeElement.reset();
     this.dialog.nativeElement.showModal();
   }
@@ -122,25 +213,16 @@ export class ProgramsComponent {
     id: number,
     name: string,
     description: string,
-    courses: ArrayElement<ProgramResponse['programs']>['courses']
+    courses: ArrayElement<GetAllProgramsResponse['programs']>['courses']
   ) {
     this.editDialog.nativeElement.showModal();
     this.form.controls.name.setValue(name);
     this.form.controls.description.setValue(description);
-    this.courseService.getAllCourses().subscribe((data) => {
-      this.allCourses = data['courses'];
-      const selectedCourseIds = courses.map((course) => course.id);
-      const courseControls = this.allCourses.reduce((acc, course) => {
-        let checkedStatus = false;
-        if (selectedCourseIds.includes(course.id)) {
-          checkedStatus = true;
-        }
-        acc[course.id] = new FormControl(checkedStatus);
-        return acc;
-      }, {} as Record<string, FormControl>);
-      console.log(courseControls);
-      this.coursesGroup = this.formBuilder.group(courseControls);
-    });
+
+    this.filterService.next('');
+    this.form.controls.selectedCourses.setValue(
+      courses.map((course) => course.id)
+    );
     this.programToEdit = id;
   }
   onEditProgram(event: Event) {
@@ -148,36 +230,53 @@ export class ProgramsComponent {
       event.preventDefault();
       return;
     }
-    if (
-      this.form.value.name &&
-      this.form.value.description &&
-      this.programToEdit &&
-      this.coursesGroup
-    ) {
+    if (this.form.value) {
       const requestBody = {
-        name: this.form.value.name,
-        description: this.form.value.description,
-        courses: Object.entries(this.coursesGroup.value)
-          .filter(([id, checked]) => checked)
-          .map(([id]) => {
-            return {
-              id: Number(id),
-            };
-          }),
+        name: this.form.controls.name.value!,
+        description: this.form.controls.description.value!,
+        courses: this.form.controls.selectedCourses.value!,
       };
-      console.log(this.programToEdit);
-      this.programService
-        .editProgram(this.programToEdit, requestBody)
-        .subscribe((data) => {
-          console.log(data);
-          this.programs = data.programs;
-        });
+      console.log(requestBody);
+      if (this.programToEdit) {
+        this.programService
+          .editProgram(this.programToEdit, requestBody)
+          .pipe(tap(() => this.tableReload()))
+          .subscribe((data) => {
+            console.log(data);
+          });
+      } else {
+        return;
+      }
     }
   }
   deleteProgram(id: number) {
-    this.programService.deleteProgram(id).subscribe((data) => {
-      this.programs = data.programs;
-      console.log(data);
-    });
+    this.programService
+      .deleteProgram(id)
+      .pipe(tap(() => this.tableReload()))
+      .subscribe((data) => {
+        console.log(data);
+      });
+  }
+
+  toggleExpandedProgram(programId: number) {
+    if (this.expandedProgramId == programId) {
+      this.expandedProgramId = null;
+    } else {
+      this.expandedProgramId = programId;
+    }
+  }
+
+  onLazyLoad(event: TableLazyLoadEvent) {
+    this.lastEvent = event;
+    console.log('event = ', event);
+    this.lazyLoadingSubject.next(event);
+  }
+
+  tableReload() {
+    if (this.lastEvent) {
+      this.loading = true;
+      console.log(this.lastEvent);
+      this.lazyLoadingSubject.next({ ...this.lastEvent, first: 0 });
+    }
   }
 }

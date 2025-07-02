@@ -91,7 +91,7 @@ export class CoursesComponent implements OnInit {
         tap(() => (this.loading = true)),
         switchMap((event: TableLazyLoadEvent) => {
           const query = this.searchControl.value || '';
-          const pageNumber = event.first! / event.rows!;
+          const pageNumber = event.first! / event.rows! + 1;
           const size = event.rows!;
 
           const queryParams = {
@@ -132,8 +132,8 @@ export class CoursesComponent implements OnInit {
           name: this.form.value.name,
           description: this.form.value.description,
         })
+        .pipe(tap(() => this.tableReload()))
         .subscribe((data) => {
-          this.courses = data.courses;
           console.log(data);
         });
     }
@@ -178,17 +178,23 @@ export class CoursesComponent implements OnInit {
           name: this.form.value.name,
           description: this.form.value.description,
         })
+        .pipe(
+          tap(() => {
+            this.tableReload();
+          })
+        )
         .subscribe((data) => {
-          this.courses = data.courses;
           console.log(data);
         });
     }
   }
 
   deleteCourse(id: number) {
-    this.http.deleteCourse(id).subscribe((data) => {
-      this.courses = data.courses;
-      console.log(data);
-    });
+    this.http
+      .deleteCourse(id)
+      .pipe(tap(() => this.tableReload()))
+      .subscribe((data) => {
+        console.log(data);
+      });
   }
 }

@@ -1,16 +1,19 @@
-type ProgramRequest = {
+import { QueryParams } from '../../../shared/models/shared.model';
+
+export type CreateProgramDto = {
   name: string;
   description: string;
-  courses: { id: number }[];
+  courses: number[];
 };
 
-type ProgramResponse = {
-  message: string;
-  createdProgram: {
-    id: number;
-    name: string;
-    description: string;
-  };
+export type UpdateProgramDto = CreateProgramDto;
+
+export type CourseFilterEvent = {
+  originalEvent: Event;
+  query: string;
+};
+
+export type GetAllProgramsResponse = {
   programs: {
     id: number;
     name: string;
@@ -20,10 +23,25 @@ type ProgramResponse = {
       id: number;
       description: string;
       schoolId: number;
+      createdAt: Date;
+      updatedAt: Date;
     }[];
   }[];
+  totalCount: number;
 };
 
+export type ProgramQueryParams = {
+  name: string;
+} & Partial<QueryParams>;
+
+export type CreateProgramResponse = {
+  message: string;
+  createdProgram: {
+    id: number;
+    name: string;
+    description: string;
+  };
+};
 type UpdateProgramResponse = {
   message: string;
   updatedProgram: {
@@ -31,17 +49,6 @@ type UpdateProgramResponse = {
     name: string;
     description: string;
   };
-  programs: {
-    id: number;
-    name: string;
-    description: string;
-    courses: {
-      name: string;
-      id: number;
-      description: string;
-      schoolId: number;
-    }[];
-  }[];
 };
 
 type deletedProgramResponse = {
@@ -51,22 +58,6 @@ type deletedProgramResponse = {
     name: string;
     description: string;
   };
-  programs: {
-    id: number;
-    name: string;
-    description: string;
-    courses: {
-      name: string;
-      id: number;
-      description: string;
-      schoolId: number;
-    }[];
-  }[];
 };
 
-export {
-  type ProgramRequest,
-  type ProgramResponse,
-  type UpdateProgramResponse,
-  type deletedProgramResponse,
-};
+export { type UpdateProgramResponse, type deletedProgramResponse };

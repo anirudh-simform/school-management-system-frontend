@@ -7,4 +7,4 @@ export type CourseResponse = {
 
 export type CourseQueryParams = {
   name: string;
-} & QueryParams;
+} & Partial<QueryParams>;

@@ -18,10 +18,11 @@ import { StudentBatchRequest } from './student-batch.model';
 import { DatePipe } from '@angular/common';
 import { StudentBatchService } from './service/student-batch.service';
 import { ProgramService } from '../../admin-courses-and-program/programs/service/program.service';
+import { CrudGeneratorComponent } from '../../../shared/crud-generator/crud-generator.component';
 
 @Component({
   selector: 'app-student-batch',
-  imports: [ReactiveFormsModule, DatePipe],
+  imports: [ReactiveFormsModule, DatePipe, CrudGeneratorComponent],
   templateUrl: './student-batch.component.html',
   styleUrl: './student-batch.component.css',
 })

@@ -1,4 +1,4 @@
-<div class="space-y-8 w-full">
+<!-- <div class="space-y-8 w-full">
   <div class="flex items-center justify-between">
     <h2
       class="text-2xl font-playfair font-semibold text-indigo-700 flex items-center"
@@ -61,34 +61,6 @@
       || form.controls.description.touched)) {
       <p class="text-red-500 text-sm mt-1 ml-1">Description is required.</p>
       }
-
-      <!-- <ul
-        id="course-selection"
-        class="menu rounded-box select-none w-full p-0"
-        [formGroup]="coursesGroup"
-      >
-        <details>
-          <summary
-            class="bg-indigo-100 text-indigo-700 font-semibold py-2 px-3 rounded-md cursor-pointer hover:bg-indigo-200 transition-all mb-2"
-          >
-            Select courses for this program
-          </summary>
-          <ul>
-            @for (course of allCourses;track course.id) {
-            <li
-              class="hover:bg-indigo-100 px-2 py-1 rounded-md cursor-pointer transition-colors flex flex-row gap-2"
-            >
-              <input
-                type="checkbox"
-                class="checkbox checkbox-primary checkbox-xs"
-                [formControlName]="course.id"
-              />
-              {{ course.name }}
-            </li>
-            }
-          </ul>
-        </details>
-      </ul> -->
 
       <p-multiselect
         [options]="allCourses"
@@ -157,33 +129,7 @@
         />
       </div>
 
-      <!-- <ul
-        id="course-selection"
-        class="menu rounded-box select-none w-full p-0"
-        [formGroup]="coursesGroup"
-      >
-        <details>
-          <summary
-            class="bg-indigo-100 text-indigo-700 font-semibold py-2 px-3 rounded-md cursor-pointer hover:bg-indigo-200 transition-all mb-2"
-          >
-            Select courses for this program
-          </summary>
-          <ul>
-            @for (course of allCourses;track course.id) {
-            <li
-              class="hover:bg-indigo-100 px-2 py-1 rounded-md cursor-pointer transition-colors flex flex-row gap-2"
-            >
-              <input
-                type="checkbox"
-                class="checkbox checkbox-primary checkbox-xs"
-                [formControlName]="course.id"
-              />
-              {{ course.name }}
-            </li>
-            }
-          </ul>
-        </details>
-      </ul> -->
+      
 
       <p-multiselect
         [options]="allCourses"
@@ -211,105 +157,8 @@
     </form>
   </dialog>
 
-  <!-- <div
-    class="overflow-x-auto bg-white/90 backdrop-blur-lg p-6 rounded-xl shadow-lg"
-  >
-    <table class="table min-w-1/3 font-sourcesans">
-      <thead>
-        <tr class="text-gray-600 text-sm uppercase">
-          <th>Name</th>
-          <th>Description</th>
-          <th>Courses</th>
-          <th class="text-center">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (program of programs;track program.id) {
-        <tr class="">
-          <td class="text-gray-800">{{ program.name }}</td>
-          <td class="text-gray-700 text-wrap w-xs text-justify">
-            @if (program.description.length < 50) {
-            {{ program.description }}
-            } @else { @if (expandedProgramId == program.id) {
-            {{ program.description }}
-            <span
-              ><button
-                class="text-indigo-600 text-sm ml-2 hover:underline cursor-pointer"
-                (click)="toggleExpandedProgram(program.id)"
-              >
-                see less
-              </button></span
-            >
-            } @else {
-            {{ program.description.slice(0, 50) }}...
-            <span
-              ><button
-                class="text-indigo-600 text-sm ml-2 hover:underline cursor-pointer"
-                (click)="toggleExpandedProgram(program.id)"
-              >
-                see more
-              </button></span
-            >
-            } }
-          </td>
-
-          <td class="text-gray-700">
-            @if (program.courses.length > 0) {
-            <ul class="menu rounded-box w-56 select-none p-0">
-              <details
-                class="transition-all duration-300 ease-in-out overflow-hidden"
-              >
-                <summary
-                  class="bg-indigo-100 text-indigo-700 font-semibold py-2 px-3 rounded-md cursor-pointer hover:bg-indigo-200 transition-all"
-                >
-                  Courses
-                </summary>
-                <ul class="pl-4 mt-2 space-y-1">
-                  @for (course of program.courses; track course.id) {
-                  <li
-                    class="hover:bg-indigo-100 px-2 py-1 rounded-md cursor-pointer transition-colors"
-                  >
-                    {{ course.name }}
-                  </li>
-                  }
-                </ul>
-              </details>
-            </ul>
-            } @else {
-            <p>No courses have been added yet</p>
-            }
-          </td>
-
-          <td class="text-center">
-            <div class="flex justify-center gap-2">
-              <button
-                class="btn btn-sm btn-warning text-white"
-                (click)="
-                  openEditModal(
-                    program.id,
-                    program.name,
-                    program.description,
-                    program.courses
-                  )
-                "
-              >
-                <i class="pi pi-pencil"></i>
-              </button>
-              <button
-                class="btn btn-sm btn-error text-white"
-                (click)="deleteProgram(program.id)"
-              >
-                <i class="pi pi-trash"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
-        } @empty {
-        <p>No programs yet</p>
-        }
-      </tbody>
-    </table>
-  </div> -->
+  
+  </div> 
 
   <div class="programs-list">
     <input
@@ -417,4 +266,4 @@
       </ng-template>
     </p-table>
   </div>
-</div>
+ -->

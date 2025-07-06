@@ -16,3 +16,8 @@ export interface IGenericCrudService {
   update(id: number | string, data: any): Observable<any>;
   delete(id: number | string): Observable<any>;
 }
+
+export type ResponseMethodTypes = 'created' | 'updated' | 'deleted';
+export type Response<ResponseMethod extends ResponseMethodTypes, T> = {
+  ResponseMethod: T;
+};

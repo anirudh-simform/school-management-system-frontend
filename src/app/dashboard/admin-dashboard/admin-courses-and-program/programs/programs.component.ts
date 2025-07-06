@@ -30,6 +30,10 @@ import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { JsonPipe } from '@angular/common';
 import { ListboxModule } from 'primeng/listbox';
 import { PopoverModule } from 'primeng/popover';
+import { CrudGeneratorComponent } from '../../../shared/crud-generator/crud-generator.component';
+import { PROGRAM_SERVICE_TOKEN } from '../../../../tokens';
+import { CRUDConfig } from '../../../shared/crud-generator/crud-generator.model';
+import { COURSE_SERVICE_TOKEN } from '../../../../tokens';
 
 @Component({
   selector: 'app-programs',
@@ -39,6 +43,17 @@ import { PopoverModule } from 'primeng/popover';
     TableModule,
     ListboxModule,
     PopoverModule,
+    CrudGeneratorComponent,
+  ],
+  providers: [
+    {
+      provide: PROGRAM_SERVICE_TOKEN,
+      useExisting: ProgramService,
+    },
+    {
+      provide: COURSE_SERVICE_TOKEN,
+      useExisting: CourseService,
+    },
   ],
   templateUrl: './programs.component.html',
   styleUrl: './programs.component.css',
@@ -257,4 +272,36 @@ export class ProgramsComponent {
   //     this.lazyLoadingSubject.next({ ...this.lastEvent, first: 0 });
   //   }
   // }
+
+  programServiceToken = PROGRAM_SERVICE_TOKEN;
+  config: CRUDConfig = {
+    POST: [
+      {
+        name: 'name',
+        label: 'Program Name',
+        inputType: 'input',
+        type: 'text',
+        defaultValue: '',
+        validators: [Validators.required],
+      },
+      {
+        name: 'description',
+        label: 'Program Description',
+        inputType: 'input',
+        type: 'text',
+        defaultValue: '',
+        validators: [Validators.required],
+      },
+      {
+        name: 'courses',
+        label: 'Courses',
+        inputType: 'multiselect',
+        defaultValue: [],
+        fetchServiceToken: COURSE_SERVICE_TOKEN,
+        optionLabel: 'name',
+        optionValue: 'id',
+      },
+    ],
+    PUT: [],
+  };
 }

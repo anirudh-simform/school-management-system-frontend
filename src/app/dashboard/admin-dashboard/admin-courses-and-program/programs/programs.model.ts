@@ -1,4 +1,5 @@
 import { QueryParams } from '../../../shared/models/shared.model';
+import { Course } from '../courses/courses.model';
 
 export type CreateProgramDto = {
   name: string;
@@ -6,11 +7,11 @@ export type CreateProgramDto = {
   courses: number[];
 };
 
-export type UpdateProgramDto = CreateProgramDto;
-
-export type CourseFilterEvent = {
-  originalEvent: Event;
-  query: string;
+export type Program = {
+  id: number;
+  name: string;
+  description: string;
+  courses: Course[];
 };
 
 export type GetAllProgramsResponse = {
@@ -33,31 +34,3 @@ export type GetAllProgramsResponse = {
 export type ProgramQueryParams = {
   name: string;
 } & Partial<QueryParams>;
-
-export type CreateProgramResponse = {
-  message: string;
-  createdProgram: {
-    id: number;
-    name: string;
-    description: string;
-  };
-};
-type UpdateProgramResponse = {
-  message: string;
-  updatedProgram: {
-    id: number;
-    name: string;
-    description: string;
-  };
-};
-
-type deletedProgramResponse = {
-  message: string;
-  deletedProgram: {
-    id: number;
-    name: string;
-    description: string;
-  };
-};
-
-export { type UpdateProgramResponse, type deletedProgramResponse };

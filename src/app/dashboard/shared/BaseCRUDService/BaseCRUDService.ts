@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { BASE_URL } from '../../../app.config';
+import { Response } from './BaseCRUD.model';
 import {
   GetResponse,
   IGenericCrudService,
@@ -10,11 +11,11 @@ import { Observable } from 'rxjs';
 
 export class BaseCRUDService<
   TQueryParams extends QueryParams,
-  TCreateResponse,
-  TUpdateResponse,
-  TDeleteResponse,
   TListItem,
   TCreateDto,
+  TCreateResponse = Response<'created', TListItem>,
+  TUpdateResponse = Response<'updated', TListItem>,
+  TDeleteResponse = Response<'deleted', TListItem>,
   TGetResponse = GetResponse<TListItem>,
   TUpdateDto = Partial<TCreateDto>
 > implements IGenericCrudService

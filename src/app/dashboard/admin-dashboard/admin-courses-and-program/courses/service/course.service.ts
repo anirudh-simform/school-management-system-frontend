@@ -16,9 +16,6 @@ import {
 })
 export class CourseService extends BaseCRUDService<
   CourseQueryParams,
-  CreateCourseResponse,
-  UpdateCourseResponse,
-  DeleteCourseResponse,
   Course,
   CreateCourseDto
 > {

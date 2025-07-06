@@ -8,7 +8,12 @@ import {
   ViewChild,
   Injector,
 } from '@angular/core';
-import { CRUDConfig, FieldType, Field } from './crud-generator.model';
+import {
+  CRUDConfig,
+  FieldType,
+  Field,
+  InnerServiceMapObject,
+} from './crud-generator.model';
 import { BaseCRUDService } from '../BaseCRUDService/BaseCRUDService';
 import { IGenericCrudService } from '../BaseCRUDService/BaseCRUD.model';
 import {
@@ -20,7 +25,17 @@ import {
 } from 'rxjs';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { MultiSelect, MultiSelectFilterEvent } from 'primeng/multiselect';
+import {
+  AutoCompleteModule,
+  AutoCompleteCompleteEvent,
+  AutoCompleteDropdownClickEvent,
+} from 'primeng/autocomplete';
+import { SelectModule } from 'primeng/select';
+import { CheckboxModule } from 'primeng/checkbox';
+import { PopoverModule } from 'primeng/popover';
+import { OrderListModule } from 'primeng/orderlist';
 import { OnInit } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import {
   FormControl,
   FormGroup,
@@ -29,7 +44,17 @@ import {
 } from '@angular/forms';
 @Component({
   selector: 'app-crud-generator',
-  imports: [ReactiveFormsModule, TableModule],
+  imports: [
+    ReactiveFormsModule,
+    TableModule,
+    MultiSelect,
+    AutoCompleteModule,
+    SelectModule,
+    CheckboxModule,
+    PopoverModule,
+    OrderListModule,
+    DatePipe,
+  ],
   templateUrl: './crud-generator.component.html',
   styleUrl: './crud-generator.component.css',
 })
@@ -59,12 +84,7 @@ export class CrudGeneratorComponent implements OnInit {
   // Map for storing the injected instance of inner services(services required for select options)
   innerServiceMap = new Map<
     InjectionToken<IGenericCrudService>,
-    {
-      service: IGenericCrudService;
-      subject: Subject<string>;
-      options: string[];
-      onFilter: (event: MultiSelectFilterEvent) => void;
-    }
+    InnerServiceMapObject
   >();
 
   tableSubject = new Subject<TableLazyLoadEvent>();
@@ -80,10 +100,17 @@ export class CrudGeneratorComponent implements OnInit {
   // The total number of records in the database
   totalCount = 0;
 
+  // Tells the system when to open dialog in update mode
+  updateMode = false;
+
+  // Tracks the item to update using its id
+  itemToUpdateId: number | string | undefined;
+
   private fb = new FormBuilder();
   form = this.fb.group({});
 
   ngOnInit(): void {
+    this.form.valueChanges.subscribe((data) => console.log(data));
     // initialize main service
     this.serviceMap.set(
       this.mainServiceToken,
@@ -125,28 +152,50 @@ export class CrudGeneratorComponent implements OnInit {
 
   private initializeServiceInstances(config: CRUDConfig) {
     for (const field of config.POST) {
-      if (field.inputType == 'select' || field.inputType == 'multiselect') {
-        const serviceObject = {
-          service: this.injector.get(field.fetchServiceToken),
-          subject: new Subject<string>(),
+      if (
+        field.inputType == 'autocomplete' ||
+        field.inputType == 'multiselect'
+      ) {
+        const service = this.injector.get(field.fetchServiceToken);
+        const subject = new Subject<string>();
+        const baseObject = {
+          service,
+          subject,
           options: [],
-          onFilter(event: MultiSelectFilterEvent) {
-            const query: string = event.filter;
-            serviceObject.subject.next(query);
-          },
         };
+        let serviceObject: InnerServiceMapObject;
+        if (field.inputType == 'multiselect') {
+          serviceObject = {
+            ...baseObject,
+            inputType: 'multiselect',
+            onFilter(event: MultiSelectFilterEvent) {
+              const query: string = event.filter;
+              serviceObject.subject.next(query);
+            },
+          };
+        } else {
+          serviceObject = {
+            ...baseObject,
+            inputType: 'autocomplete',
+            onFilter(event: AutoCompleteCompleteEvent) {
+              const query = event.query || '';
+              serviceObject.subject.next(query);
+            },
+          };
+        }
 
         // wire source to subject
         serviceObject.subject
           .pipe(
             debounceTime(300),
-            distinctUntilChanged(),
             switchMap((query) => {
               return serviceObject.service.get({ query });
             })
           )
           .subscribe((response) => {
             serviceObject.options = response.fetch;
+            console.log(serviceObject.inputType, serviceObject.options);
+            console.log('response fetch', response.fetch);
           });
 
         this.innerServiceMap.set(field.fetchServiceToken, serviceObject);
@@ -157,7 +206,7 @@ export class CrudGeneratorComponent implements OnInit {
   private initializeReactiveForm(config: CRUDConfig) {
     for (const field of config.POST) {
       this.form.addControl(
-        field.label,
+        field.name,
         new FormControl(
           field.defaultValue,
           field.validators || [],
@@ -202,11 +251,65 @@ export class CrudGeneratorComponent implements OnInit {
       });
   }
 
+  /**
+   * Returns the array supposed to store the options for a select or multi-select element
+   *
+   * @param {Field} field
+   * @return {*}
+   * @memberof CrudGeneratorComponent
+   */
   getOptionsFor(field: Field) {
-    if (field.inputType == 'select' || field.inputType == 'multiselect') {
+    if (field.inputType == 'autocomplete' || field.inputType == 'multiselect') {
       return this.innerServiceMap.get(field.fetchServiceToken)?.options ?? [];
     }
     return [];
+  }
+
+  /**
+   *Returns the function that should run when a multiselect emits a filter event
+   *
+   * @param {Field} field
+   * @return {*}
+   * @memberof CrudGeneratorComponent
+   */
+  getMultiselectEventFunctionFor(field: Field) {
+    if (field.inputType == 'multiselect') {
+      const obj = this.innerServiceMap.get(field.fetchServiceToken);
+      if (obj?.inputType == 'multiselect') {
+        return obj.onFilter;
+      } else {
+        return function fallback(event: MultiSelectFilterEvent) {
+          console.error('No event function defined for field: ', field.name);
+        };
+      }
+    }
+    return function fallback(event: MultiSelectFilterEvent) {
+      console.error('Field not of type select or multiselect: ', field.name);
+    };
+  }
+
+  /**
+   *Returns the function that should run when an autocomplete  emits a filter event
+   *
+   * @param {Field} field
+   * @return {*}
+   * @memberof CrudGeneratorComponent
+   */
+  getAutocompleteEventFunctionFor(field: Field) {
+    if (field.inputType == 'autocomplete') {
+      const obj = this.innerServiceMap.get(field.fetchServiceToken);
+      if (obj?.inputType == 'autocomplete') {
+        return obj.onFilter;
+      } else {
+        return function fallback(event: AutoCompleteCompleteEvent) {
+          console.error('No event function defined for field: ', field.name);
+        };
+      }
+    }
+
+    return function fallback(event: AutoCompleteCompleteEvent) {
+      console.error('Field not of type select or multiselect: ', field.name);
+    };
   }
 
   // dialog methods
@@ -223,5 +326,140 @@ export class CrudGeneratorComponent implements OnInit {
 
   closeDialog() {
     this.dialog.nativeElement.close();
+    this.updateMode = false;
+  }
+
+  onPOST(event: Event) {
+    if (this.form.invalid) {
+      event.preventDefault();
+      return;
+    }
+
+    const formValue = this.getFormData(this.form.value);
+
+    console.log(formValue);
+
+    this.serviceMap
+      .get(this.mainServiceToken)!
+      .create(formValue)
+      .pipe(tap(() => this.tableReload()))
+      .subscribe((response) => {
+        this.mainItems = response.fetch;
+        console.log(response);
+        console.log('mainItems', this.mainItems);
+      });
+  }
+
+  openUpdateDialog(id: number | string, formData: any) {
+    this.dialog.nativeElement.showModal();
+    console.log('id', id);
+    console.log('formData', formData);
+    console.log('formValue', this.form.value);
+    this.itemToUpdateId = id;
+    this.updateMode = true;
+
+    for (const value of this.innerServiceMap.values()) {
+      value.subject.next('');
+    }
+
+    const processedData = this.convertDatesForForm(formData);
+    this.form.patchValue(processedData);
+    console.log('processedData', processedData);
+    console.log('formData', formData);
+  }
+
+  onPUT(event: Event) {
+    console.log('inside put');
+    console.log(this.updateMode);
+    if (this.form.invalid) {
+      event.preventDefault();
+      return;
+    }
+
+    if (!this.itemToUpdateId) {
+      alert('No item selected for update');
+      return;
+    }
+
+    const formValue = this.getFormData(this.form.value);
+    this.serviceMap
+      .get(this.mainServiceToken)!
+      .update(this.itemToUpdateId, formValue)
+      .pipe(tap(() => this.tableReload()))
+      .subscribe((data) => {
+        console.log(data);
+      });
+  }
+
+  onDELETE(id: number | string) {
+    console.log('id delete', id);
+
+    this.serviceMap
+      .get(this.mainServiceToken)!
+      .delete(id)
+      .pipe(tap(() => this.tableReload()))
+      .subscribe((data) => {
+        console.log(data);
+      });
+  }
+
+  // utility methods
+
+  isRadioField(field: Field): field is Extract<Field, { type: 'radio' }> {
+    return field.inputType == 'input' && field.type == 'radio';
+  }
+
+  getFormData(formData: Record<string, unknown>) {
+    const dataCopy = structuredClone(formData);
+    let ids = [];
+    // for (const key in dataCopy) {
+    //   if (Array.isArray(dataCopy[key])) {
+    //     const idArray = dataCopy[key];
+    //     ids.push(
+    //       idArray.map((obj) => {
+    //         return obj.id;
+    //       })
+    //     );
+    //     dataCopy[key] = ids;
+    //   }
+    //   ids = [];
+    // }
+
+    // return dataCopy;
+
+    for (const inputConfig of this.config()['POST']) {
+      if (inputConfig.inputType == 'multiselect') {
+        const id = inputConfig.optionValue;
+
+        const objArray = dataCopy[inputConfig.name] as Array<
+          Record<string, unknown>
+        >;
+        const processedArray = objArray.map((obj) => obj[id]);
+
+        dataCopy[inputConfig.name] = processedArray;
+      } else if (inputConfig.inputType == 'autocomplete') {
+        const id = `${inputConfig.optionValue.toString()}`;
+        const obj = dataCopy[inputConfig.name] as Record<string, any>;
+        const processedObj = obj[id];
+        dataCopy[inputConfig.name] = processedObj;
+      }
+    }
+
+    return dataCopy;
+  }
+
+  convertDatesForForm(formData: Record<string, unknown>) {
+    const dataCopy = { ...formData };
+    for (const inputConfig of this.config()['POST']) {
+      if (
+        inputConfig['inputType'] == 'input' &&
+        inputConfig['type'] == 'date'
+      ) {
+        dataCopy[inputConfig['name']] = (
+          dataCopy[inputConfig['name']] as string
+        ).split('T')[0];
+      }
+    }
+    return dataCopy;
   }
 }

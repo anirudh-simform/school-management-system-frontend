@@ -2,13 +2,17 @@ import { InjectionToken } from '@angular/core';
 import { BaseCRUDService } from '../BaseCRUDService/BaseCRUDService';
 import { IGenericCrudService } from '../BaseCRUDService/BaseCRUD.model';
 import { ValidatorFn, AsyncValidatorFn } from '@angular/forms';
+import { MultiSelectFilterEvent } from 'primeng/multiselect';
+import { Subject } from 'rxjs';
+import { AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 
-export type InputType = 'input' | 'select' | 'multiselect';
-export type FieldType = 'text' | 'date' | 'number' | 'email';
+export type InputType = 'input' | 'select' | 'multiselect' | 'autocomplete';
+export type FieldType = 'text' | 'date' | 'number' | 'email' | 'radio';
 export type CRUDMethod = 'POST' | 'PUT';
 
 export type Field =
   | {
+      name: string;
       label: string;
       inputType: 'input';
       type: FieldType;
@@ -17,20 +21,43 @@ export type Field =
       asyncValidators?: AsyncValidatorFn[];
     }
   | {
+      name: string;
       label: string;
-      inputType: 'multiselect';
-      type: FieldType;
-      defaultValue: number[];
-      fetchServiceToken: InjectionToken<IGenericCrudService>;
+      inputType: 'input';
+      type: 'radio';
+      defaultValue: string;
+      options: { label: string; value: string }[];
       validators?: ValidatorFn[];
       asyncValidators?: AsyncValidatorFn[];
     }
   | {
+      name: string;
       label: string;
-      inputType: 'select';
-      type: FieldType;
+      inputType: 'multiselect';
+      defaultValue: number[];
+      fetchServiceToken: InjectionToken<IGenericCrudService>;
+      validators?: ValidatorFn[];
+      asyncValidators?: AsyncValidatorFn[];
+      optionValue: string;
+      optionLabel: string;
+    }
+  | {
+      name: string;
+      label: string;
+      inputType: 'autocomplete';
       defaultValue: number;
       fetchServiceToken: InjectionToken<IGenericCrudService>;
+      validators?: ValidatorFn[];
+      asyncValidators?: AsyncValidatorFn[];
+      optionValue: string;
+      optionLabel: string;
+    }
+  | {
+      name: string;
+      label: string;
+      inputType: 'select';
+      defaultValue: string;
+      options: { label: string; value: string }[];
       validators?: ValidatorFn[];
       asyncValidators?: AsyncValidatorFn[];
     };
@@ -110,3 +137,23 @@ const s = {
     },
   ],
 };
+
+export type InnerServiceMapObject =
+  | {
+      inputType: 'multiselect';
+      service: IGenericCrudService;
+      subject: Subject<string>;
+      options: Record<string, string>[];
+      onFilter: (event: MultiSelectFilterEvent) => void;
+    }
+  | {
+      inputType: 'autocomplete';
+      service: IGenericCrudService;
+      subject: Subject<string>;
+      options: Record<string, string>[];
+      onFilter: (event: AutoCompleteCompleteEvent) => void;
+    };
+
+export type FilterEventFunction =
+  | ((event: MultiSelectFilterEvent) => void)
+  | ((event: string) => void);

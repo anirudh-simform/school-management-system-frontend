@@ -192,13 +192,15 @@ export class CoursesComponent {
   config: CRUDConfig = {
     POST: [
       {
-        label: 'name',
+        name: 'name',
+        label: 'Course Name',
         inputType: 'input',
         type: 'text',
         defaultValue: '',
       },
       {
-        label: 'description',
+        name: 'description',
+        label: 'Description',
         inputType: 'input',
         type: 'text',
         defaultValue: '',
@@ -206,13 +208,15 @@ export class CoursesComponent {
     ],
     PUT: [
       {
-        label: 'name',
+        name: 'name',
+        label: 'Course Name',
         inputType: 'input',
         type: 'text',
         defaultValue: '',
       },
       {
-        label: 'description',
+        name: 'descirption',
+        label: 'Description',
         inputType: 'input',
         type: 'text',
         defaultValue: '',

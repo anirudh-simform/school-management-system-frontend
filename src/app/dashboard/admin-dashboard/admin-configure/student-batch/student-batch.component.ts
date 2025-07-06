@@ -1,28 +1,40 @@
-import {
-  Component,
-  ElementRef,
-  inject,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component } from '@angular/core';
 
-import { type GetAllStudentBatchesResponse } from './student-batch.model';
 import {
   ReactiveFormsModule,
-  FormBuilder,
   Validators,
   AbstractControl,
 } from '@angular/forms';
-import { GetAllProgramsResponse } from '../../admin-courses-and-program/programs/programs.model';
-import { StudentBatchRequest } from './student-batch.model';
+
 import { DatePipe } from '@angular/common';
 import { StudentBatchService } from './service/student-batch.service';
 import { ProgramService } from '../../admin-courses-and-program/programs/service/program.service';
 import { CrudGeneratorComponent } from '../../../shared/crud-generator/crud-generator.component';
+import { CRUDConfig } from '../../../shared/crud-generator/crud-generator.model';
+import {
+  STUDENT_BATCH_SERVICE_TOKEN,
+  GRADE_LEVEL_SERVICE_TOKEN,
+  PROGRAM_SERVICE_TOKEN,
+} from '../../../../tokens';
+import { GradeLevelService } from '../grade-level/services/grade-level.service';
 
 @Component({
   selector: 'app-student-batch',
   imports: [ReactiveFormsModule, DatePipe, CrudGeneratorComponent],
+  providers: [
+    {
+      provide: STUDENT_BATCH_SERVICE_TOKEN,
+      useExisting: StudentBatchService,
+    },
+    {
+      provide: GRADE_LEVEL_SERVICE_TOKEN,
+      useExisting: GradeLevelService,
+    },
+    {
+      provide: PROGRAM_SERVICE_TOKEN,
+      useExisting: ProgramService,
+    },
+  ],
   templateUrl: './student-batch.component.html',
   styleUrl: './student-batch.component.css',
 })
@@ -151,6 +163,55 @@ export class StudentBatchComponent {
   //       this.studentBatches = data.studentBatches;
   //     });
   //   }
+
+  studentBatchService = STUDENT_BATCH_SERVICE_TOKEN;
+  config: CRUDConfig = {
+    POST: [
+      {
+        name: 'name',
+        label: 'Student Batch Name',
+        inputType: 'input',
+        type: 'text',
+        defaultValue: '',
+        validators: [Validators.required],
+      },
+      {
+        name: 'startDate',
+        label: 'Batch Start Date',
+        inputType: 'input',
+        type: 'date',
+        defaultValue: Date.now(),
+        validators: [Validators.required],
+      },
+      {
+        name: 'endDate',
+        label: 'Batch End Date',
+        inputType: 'input',
+        type: 'date',
+        defaultValue: Date.now(),
+        validators: [Validators.required],
+      },
+      {
+        name: 'program',
+        label: 'Program',
+        inputType: 'autocomplete',
+        defaultValue: 0,
+        fetchServiceToken: PROGRAM_SERVICE_TOKEN,
+        optionLabel: 'name',
+        optionValue: 'id',
+      },
+      {
+        name: 'gradeLevel',
+        label: 'Grade Level',
+        inputType: 'autocomplete',
+        defaultValue: 0,
+        fetchServiceToken: GRADE_LEVEL_SERVICE_TOKEN,
+        optionLabel: 'name',
+        optionValue: 'id',
+      },
+    ],
+    PUT: [],
+  };
 }
 
 function dateValidator(dateControl: AbstractControl) {

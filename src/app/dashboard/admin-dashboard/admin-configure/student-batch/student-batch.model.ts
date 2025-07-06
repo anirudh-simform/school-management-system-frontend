@@ -1,52 +1,21 @@
-type GetAllStudentBatchesResponse = {
-  id: number;
-  name: string;
-  startDate: Date;
-  endDate: Date;
-  program: {
-    id: number;
-    name: string;
-  };
-}[];
-
-type StudentBatch = {
+import { QueryParams } from '../../../shared/models/shared.model';
+export type StudentBatch = {
   name: string;
   id: number;
   startDate: Date;
   endDate: Date;
-  programId: number;
-  schoolId: number;
+  program: { id: number; name: string };
+  gradeLevel: { id: number; name: string };
 };
 
-type StudentBatchCreateResponse = {
-  message: string;
-  studentBatch: StudentBatch;
-  studentBatches: GetAllStudentBatchesResponse;
-};
-
-type StudentBatchUpdateResponse = {
-  message: string;
-  updatedStudentBatch: StudentBatch;
-  studentBatches: GetAllStudentBatchesResponse;
-};
-
-type StudentBatchDeletedResponse = {
-  message: string;
-  deletedStudentBatch: StudentBatch;
-  studentBatches: GetAllStudentBatchesResponse;
-};
-
-type StudentBatchRequest = {
+export type StudentBatchCreateDto = {
   name: string;
   startDate: Date;
   endDate: Date;
   programId: number;
+  gradeLevelId: number;
 };
 
-export {
-  type GetAllStudentBatchesResponse,
-  type StudentBatchCreateResponse,
-  type StudentBatchRequest,
-  type StudentBatchUpdateResponse,
-  type StudentBatchDeletedResponse,
-};
+export type StudentBatchQueryParams = {
+  query: string;
+} & Partial<QueryParams>;

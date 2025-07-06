@@ -18,6 +18,7 @@ import { StudentBatchComponent } from './dashboard/admin-dashboard/admin-configu
 import { UserManagementStudentComponent } from './dashboard/admin-dashboard/admin-user-management/user-management-student/user-management-student.component';
 import { UserManagementAdminComponent } from './dashboard/admin-dashboard/admin-user-management/user-management-admin/user-management-admin.component';
 import { MessagesComponent } from './dashboard/shared/messages/messages.component';
+import { GradeLevelComponent } from './dashboard/admin-dashboard/admin-configure/grade-level/grade-level.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -38,6 +39,7 @@ export const routes: Routes = [
           },
           { path: 'department', component: DepartmentComponent },
           { path: 'student-batch', component: StudentBatchComponent },
+          { path: 'grade-level', component: GradeLevelComponent },
         ],
       },
       {

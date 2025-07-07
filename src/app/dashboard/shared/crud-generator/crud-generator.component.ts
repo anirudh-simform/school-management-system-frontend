@@ -30,6 +30,7 @@ import {
   AutoCompleteCompleteEvent,
   AutoCompleteDropdownClickEvent,
 } from 'primeng/autocomplete';
+import { RadioButtonModule } from 'primeng/radiobutton';
 import { SelectModule } from 'primeng/select';
 import { CheckboxModule } from 'primeng/checkbox';
 import { PopoverModule } from 'primeng/popover';
@@ -54,6 +55,7 @@ import {
     PopoverModule,
     OrderListModule,
     DatePipe,
+    RadioButtonModule,
   ],
   templateUrl: './crud-generator.component.html',
   styleUrl: './crud-generator.component.css',
@@ -362,7 +364,10 @@ export class CrudGeneratorComponent implements OnInit {
       value.subject.next('');
     }
 
-    const processedData = this.convertDatesForForm(formData);
+    let processedData = this.convertDatesForForm(formData);
+    processedData = this.getFormDataForDisplay(processedData);
+
+    console.log('formValue from PUT', processedData);
     this.form.patchValue(processedData);
     console.log('processedData', processedData);
     console.log('formData', formData);
@@ -381,7 +386,7 @@ export class CrudGeneratorComponent implements OnInit {
       return;
     }
 
-    const formValue = this.getFormData(this.form.value);
+    let formValue = this.getFormData(this.form.value);
     this.serviceMap
       .get(this.mainServiceToken)!
       .update(this.itemToUpdateId, formValue)
@@ -429,19 +434,40 @@ export class CrudGeneratorComponent implements OnInit {
 
     for (const inputConfig of this.config()['POST']) {
       if (inputConfig.inputType == 'multiselect') {
-        const id = inputConfig.optionValue;
+        const objValue = dataCopy[inputConfig.name];
+        const idKey = inputConfig.optionValue;
 
-        const objArray = dataCopy[inputConfig.name] as Array<
-          Record<string, unknown>
-        >;
-        const processedArray = objArray.map((obj) => obj[id]);
-
-        dataCopy[inputConfig.name] = processedArray;
+        if (Array.isArray(objValue)) {
+          const processedArray = objValue.map((item) =>
+            typeof item == 'object' ? item[idKey] : item
+          );
+          dataCopy[inputConfig.name] = processedArray;
+        }
       } else if (inputConfig.inputType == 'autocomplete') {
         const id = `${inputConfig.optionValue.toString()}`;
         const obj = dataCopy[inputConfig.name] as Record<string, any>;
         const processedObj = obj[id];
         dataCopy[inputConfig.name] = processedObj;
+      }
+    }
+
+    return dataCopy;
+  }
+
+  getFormDataForDisplay(formData: Record<string, unknown>) {
+    const dataCopy = { ...formData };
+
+    for (const inputConfig of this.config()['POST']) {
+      if (inputConfig.inputType == 'multiselect') {
+        const objValue = dataCopy[inputConfig.name];
+        const idKey = inputConfig.optionValue;
+
+        if (Array.isArray(objValue)) {
+          const processedArray = objValue.map((item) =>
+            typeof item == 'object' ? item[idKey] : item
+          );
+          dataCopy[inputConfig.name] = processedArray;
+        }
       }
     }
 

@@ -26,8 +26,8 @@
         {{updateMode ? `Update ${pageName()}`: `Add New ${pageName()}`}}
       </h3>
 
-      @for(field of config().POST; track field.label) { @if (field.inputType ==
-      'autocomplete') {
+      @for(field of (updateMode ? config().PUT: config().POST); track
+      field.label) { @if (field.inputType == 'autocomplete') {
       <div class="form-control mb-4 flex flex-col gap-2">
         <label class="label">
           <span class="label-text text-gray-700 font-medium"
@@ -89,12 +89,11 @@
             >
           </legend>
 
-          @for (option of field.options; track $index) {
+          @for (option of field.options; track $index; let idx = $index;) {
           <div id="checkbox">
-            <label for="option1">{{ option.label }}</label>
-            <p-checkbox
-              inputId="option1"
-              [name]="option.label"
+            <label [for]="`option${idx}`">{{ option.label }}</label>
+            <p-radiobutton
+              [inputId]="`option${idx}`"
               [value]="option.value"
               [formControlName]="field.name"
             />
@@ -245,7 +244,7 @@
     >
       <ng-template pTemplate="header">
         <tr>
-          @for (configItem of config().POST; track configItem) {
+          @for (configItem of config().PUT; track configItem) {
           <th>
             {{ configItem.label }}
           </th>
@@ -256,7 +255,7 @@
 
       <ng-template pTemplate="body" let-item>
         <tr class="hover:bg-indigo-50 transition">
-          @for (field of config().POST; track $index) { @if (field.inputType ==
+          @for (field of config().PUT; track $index) { @if (field.inputType ==
           'multiselect') {
           <div class="px-2 py-5">
             <button

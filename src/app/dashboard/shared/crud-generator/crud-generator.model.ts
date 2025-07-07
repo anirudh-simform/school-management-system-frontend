@@ -7,7 +7,13 @@ import { Subject } from 'rxjs';
 import { AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 
 export type InputType = 'input' | 'select' | 'multiselect' | 'autocomplete';
-export type FieldType = 'text' | 'date' | 'number' | 'email' | 'radio';
+export type FieldType =
+  | 'text'
+  | 'date'
+  | 'number'
+  | 'email'
+  | 'radio'
+  | 'password';
 export type CRUDMethod = 'POST' | 'PUT';
 
 export type Field =

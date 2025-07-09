@@ -317,6 +317,7 @@ export class CrudGeneratorComponent implements OnInit {
   // dialog methods
 
   openDialog() {
+    this.updateMode = false;
     this.dialog.nativeElement.show();
     this.form.reset();
 

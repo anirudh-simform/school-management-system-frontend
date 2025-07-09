@@ -4,7 +4,9 @@ import { GradeLevelService } from './dashboard/admin-dashboard/admin-configure/g
 import { InjectionToken } from '@angular/core';
 import { StudentBatchService } from './dashboard/admin-dashboard/admin-configure/student-batch/service/student-batch.service';
 import { StudentService } from './dashboard/admin-dashboard/admin-user-management/user-management-student/services/student.service';
-
+import { DepartmentService } from './dashboard/admin-dashboard/admin-configure/department/service/department.service';
+import { InstructorService } from './dashboard/admin-dashboard/admin-user-management/user-management-instructor/services/instructor.service';
+import { AdminService } from './dashboard/admin-dashboard/admin-user-management/user-management-admin/services/admin.service';
 export const COURSE_SERVICE_TOKEN = new InjectionToken<CourseService>(
   'COURSE_SERVICE_TOKEN'
 );
@@ -22,4 +24,16 @@ export const STUDENT_BATCH_SERVICE_TOKEN =
 
 export const STUDENT_SERVICE_TOKEN = new InjectionToken<StudentService>(
   'STUDENT_SERVICE_TOKEN'
+);
+
+export const DEPARTMENT_SERVICE_TOKEN = new InjectionToken<DepartmentService>(
+  'DEPARTMENT_SERVICE_TOKEN'
+);
+
+export const INSTRUCTOR_SERVICE_TOKEN = new InjectionToken<InstructorService>(
+  'INSTRUCTOR_SERVICE_TOKEN'
+);
+
+export const ADMIN_SERVICE_TOKEN = new InjectionToken<AdminService>(
+  'ADMIN_SERVICE_TOKEN'
 );

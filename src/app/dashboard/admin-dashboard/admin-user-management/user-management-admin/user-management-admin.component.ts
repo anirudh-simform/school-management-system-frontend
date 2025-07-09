@@ -9,10 +9,19 @@ import validator from 'validator';
 import { Gender, Role } from '../admin-user-management.model';
 // import { AddAdminRequest } from '../user-management-student/user-management-student.model';
 import { UserService } from '../service/user.service';
-
+import { CRUDConfig } from '../../../shared/crud-generator/crud-generator.model';
+import { AdminService } from './services/admin.service';
+import { ADMIN_SERVICE_TOKEN } from '../../../../tokens';
+import { CrudGeneratorComponent } from '../../../shared/crud-generator/crud-generator.component';
 @Component({
   selector: 'app-user-management-admin',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CrudGeneratorComponent],
+  providers: [
+    {
+      provide: ADMIN_SERVICE_TOKEN,
+      useExisting: AdminService,
+    },
+  ],
   templateUrl: './user-management-admin.component.html',
   styleUrl: './user-management-admin.component.css',
 })
@@ -111,4 +120,76 @@ export class UserManagementAdminComponent {
   //     console.log(data);
   //   });
   // }
+
+  adminService = ADMIN_SERVICE_TOKEN;
+
+  config: CRUDConfig = {
+    POST: [
+      {
+        name: 'firstname',
+        label: 'First Name',
+        defaultValue: '',
+        inputType: 'input',
+        type: 'text',
+        validators: [Validators.required],
+      },
+      {
+        name: 'lastname',
+        label: 'Last Name',
+        defaultValue: '',
+        inputType: 'input',
+        type: 'text',
+        validators: [Validators.required],
+      },
+      {
+        name: 'email',
+        label: 'Email',
+        defaultValue: '',
+        inputType: 'input',
+        type: 'email',
+        validators: [Validators.required, Validators.email],
+      },
+
+      {
+        name: 'dob',
+        label: 'Date of Birth',
+        defaultValue: '',
+        inputType: 'input',
+        type: 'date',
+        validators: [Validators.required],
+      },
+      {
+        name: 'phone',
+        label: 'Phone',
+        defaultValue: '',
+        inputType: 'input',
+        type: 'text',
+        validators: [Validators.required],
+      },
+      {
+        name: 'gender',
+        label: 'Gender',
+        defaultValue: '',
+        inputType: 'input',
+        type: 'radio',
+        validators: [Validators.required],
+        options: [
+          { label: 'Male', value: 'Male' },
+          { label: 'Female', value: 'Female' },
+        ],
+      },
+      {
+        name: 'role',
+        label: 'Role',
+        defaultValue: 'Admin',
+        inputType: 'select',
+        validators: [Validators.required],
+        options: [
+          { label: 'Admin', value: 'Admin' },
+          { label: 'School Super Admin', value: 'SchoolSuperAdmin' },
+        ],
+      },
+    ],
+    PUT: [],
+  };
 }

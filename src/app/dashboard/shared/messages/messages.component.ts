@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { MessageService } from './services/message.service';
 
 @Component({
   selector: 'app-messages',
@@ -6,4 +7,9 @@ import { Component } from '@angular/core';
   templateUrl: './messages.component.html',
   styleUrl: './messages.component.css',
 })
-export class MessagesComponent {}
+export class MessagesComponent implements OnInit {
+  messageService = inject(MessageService);
+  ngOnInit(): void {
+    this.messageService.connect();
+  }
+}

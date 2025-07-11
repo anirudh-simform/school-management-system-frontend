@@ -3,6 +3,7 @@ import { BASE_URL } from './app.config';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthStatusService } from './auth-status.service';
+import { MessageService } from './dashboard/shared/messages/services/message.service';
 
 @Injectable({
   providedIn: 'root',
@@ -46,6 +47,12 @@ export class AuthService {
       id: string;
       schoolId: number;
     }>(this.baseUrl + '/user/me', {
+      withCredentials: true,
+    });
+  }
+
+  refresh() {
+    return this.http.get(this.baseUrl + '/user/refresh', {
       withCredentials: true,
     });
   }

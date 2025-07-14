@@ -1,0 +1,348 @@
+<div class="space-y-8 w-full">
+  <div class="flex items-center justify-between">
+    <h2
+      class="text-2xl font-playfair font-semibold text-indigo-700 flex items-center"
+    >
+      <i class="pi pi-book mr-2 text-indigo-500"></i>
+      <span class="text-gray-700">{{ pageName() }}</span>
+    </h2>
+    <button (click)="openDialog()" class="btn btn-primary">
+      <i class="pi pi-plus mr-2"></i>Add {{ pageName() }}
+    </button>
+  </div>
+
+  <dialog id="POSTDialog" class="modal" #dialog>
+    <form
+      method="dialog"
+      class="modal-box bg-white/90 backdrop-blur-lg rounded-xl shadow-lg font-sourcesans"
+      [formGroup]="form"
+      #dialogForm
+      (ngSubmit)="updateMode ? onPUT($event) : onPOST($event)"
+    >
+      <h3
+        class="font-playfair font-semibold text-2xl text-indigo-700 mb-4 flex items-center"
+      >
+        <i class="pi pi-book mr-2 text-indigo-500"></i>
+        {{updateMode ? `Update ${pageName()}`: `Add New ${pageName()}`}}
+      </h3>
+
+      @for(field of config().POST; track field.label) { @if (field.inputType ==
+      'autocomplete') {
+      <div class="form-control mb-4 flex flex-col gap-2">
+        <label class="label">
+          <span class="label-text text-gray-700 font-medium"
+            >Choose a {{ field.label }}</span
+          >
+        </label>
+
+        <p-autocomplete
+          [formControlName]="field.name"
+          [suggestions]="getOptionsFor(field)"
+          [optionLabel]="field.optionLabel"
+          (completeMethod)="getAutocompleteEventFunctionFor(field)($event)"
+          [dropdown]="true"
+          (onDropdownClick)="getAutocompleteEventFunctionFor(field)($event)"
+          placeholder="Start typing to search"
+          [appendTo]="dialog"
+          [forceSelection]="true"
+        />
+      </div>
+      } @else if (field.inputType == 'multiselect') {
+      <div class="form-control mb-4">
+        <label class="label">
+          <span class="label-text text-gray-700 font-medium"
+            >Choose {{ field.label }}s</span
+          >
+        </label>
+        <p-multiselect
+          [options]="getOptionsFor(field)"
+          [formControlName]="field.name"
+          [optionLabel]="field.optionLabel"
+          [optionValue]="field.optionValue"
+          placeholder="Select Courses"
+          display="chip"
+          [maxSelectedLabels]="3"
+          styleClass="w-full"
+          [filter]="true"
+          (onFilter)="getMultiselectEventFunctionFor(field)($event)"
+          [appendTo]="dialog"
+          [loading]="loading"
+          placeholder="Start typing to search"
+        />
+      </div>
+      } @else if (field.inputType == 'select') {
+      <div class="form-control mb-4">
+        <label class="label">
+          <span class="label-text text-gray-700 font-medium"
+            >Choose a {{ field.label }}</span
+          >
+        </label>
+
+        <p-select
+          [formControlName]="field.name"
+          [options]="field.options"
+          [appendTo]="dialog"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Select an option"
+          class="w-full"
+        />
+      </div>
+      } @else { @if (isRadioField(field)) {
+      <div class="form-control mb-4">
+        <fieldset>
+          <legend>
+            <span class="label-text text-gray-700 font-medium"
+              >Choose a {{ field.label }}</span
+            >
+          </legend>
+
+          <div
+            class="grid-cols-2 grid grid-rows-[fit-content fit-content] gap-1"
+          >
+            @for (option of field.options; track $index; let idx = $index;) {
+            <div id="checkbox" class="flex gap-1">
+              <p-radiobutton
+                [inputId]="`option${idx}`"
+                [value]="option.value"
+                [formControlName]="field.name"
+              />
+              <label [for]="`option${idx}`">{{ option.label }}</label>
+            </div>
+            }
+          </div>
+        </fieldset>
+      </div>
+      } @else {
+      <div class="form-control mb-4">
+        <label class="label" [htmlFor]="field.name">
+          <span class="label-text text-gray-700 font-medium">{{
+            field.label
+          }}</span>
+        </label>
+
+        <input
+          type="text"
+          [formControlName]="field.name"
+          [name]="field.name"
+          [type]="field.type"
+          class="input input-bordered w-full bg-white"
+          [placeholder]="`Enter ${field.label}`"
+        />
+      </div>
+      } } }
+      <!-- <div class="form-control mb-4">
+        <label class="label">
+          <span class="label-text text-gray-700 font-medium">Course Name</span>
+        </label>
+        <input
+          type="text"
+          placeholder="Enter course name"
+          class="input input-bordered w-full bg-white"
+          formControlName="name"
+        />
+      </div>
+
+      @if (form.controls.name.invalid && (form.controls.name.dirty ||
+      form.controls.name.touched)) {
+      <p class="text-red-500 text-sm mt-1 ml-1">Name is required.</p>
+      }
+
+      <div class="form-control mb-4">
+        <label class="label">
+          <span class="label-text text-gray-700 font-medium"
+            >Course Description</span
+          >
+        </label>
+        <input
+          type="text"
+          placeholder="Enter course description name"
+          class="input input-bordered w-full bg-white"
+          formControlName="description"
+        />
+      </div> -->
+
+      <div class="modal-action">
+        <button type="button" class="btn btn-ghost" (click)="closeDialog()">
+          Cancel
+        </button>
+        <button type="submit" class="btn btn-primary">
+          <i class="pi pi-check mr-2"></i
+          >{{updateMode ? `Update ${pageName()}`: `Add ${pageName()}`}}
+        </button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- <dialog id="EditDepartmentModal" class="modal" #updateDialog>
+      <form
+        method="dialog"
+        class="modal-box bg-white/90 backdrop-blur-lg rounded-xl shadow-lg font-sourcesans"
+        (ngSubmit)="onEditCourse($event)"
+        [formGroup]="form"
+        #updateDialogForm
+      >
+        <h3
+          class="font-playfair font-semibold text-2xl text-indigo-700 mb-4 flex items-center"
+        >
+          <i class="pi pi-building mr-2 text-indigo-500"></i>
+          Edit Course
+        </h3>
+  
+        <div class="form-control mb-4">
+          <label class="label">
+            <span class="label-text text-gray-700 font-medium">Course Name</span>
+          </label>
+          <input
+            type="text"
+            placeholder="Enter Course name"
+            class="input input-bordered w-full bg-white"
+            formControlName="name"
+          />
+        </div>
+  
+        @if (form.controls.name.invalid && (form.controls.name.dirty ||
+        form.controls.name.touched)) {
+        <p class="text-red-500 text-sm mt-1 ml-1">Name is required.</p>
+        }
+  
+        <div class="form-control mb-4">
+          <label class="label">
+            <span class="label-text text-gray-700 font-medium"
+              >Course Description</span
+            >
+          </label>
+          <input
+            type="text"
+            placeholder="Enter Course description"
+            class="input input-bordered w-full bg-white"
+            formControlName="description"
+          />
+        </div>
+  
+        @if (form.controls.description.invalid && (form.controls.description.dirty
+        || form.controls.description.touched)) {
+        <p class="text-red-500 text-sm mt-1 ml-1">Description is required.</p>
+        }
+  
+        <div class="modal-action">
+          <button class="btn btn-ghost" (click)="closeEditModal($event)">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary">
+            <i class="pi pi-check mr-2"></i>Submit
+          </button>
+        </div>
+      </form>
+    </dialog> -->
+
+  <div id="item-list">
+    <input
+      type="text"
+      class="input input-bordered w-md bg-white mb-4"
+      placeholder="Start typing to search"
+      [formControl]="searchControl"
+    />
+
+    <p-table
+      [value]="mainItems"
+      [lazy]="true"
+      [paginator]="true"
+      [rows]="10"
+      [totalRecords]="totalCount"
+      (onLazyLoad)="loadItems($event)"
+      [alwaysShowPaginator]="true"
+      [loading]="loading"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          @for (configItem of config().POST; track configItem) {
+          <th>
+            {{ configItem.label }}
+          </th>
+          }
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-item>
+        <tr class="hover:bg-indigo-50 transition">
+          @for (field of config().POST; track $index) { @if (field.inputType ==
+          'multiselect') {
+          <div class="px-2 py-5">
+            <button
+              class="btn btn-secondary mx-auto"
+              (click)="pop.toggle($event)"
+            >
+              {{ field.name }}
+            </button>
+            <p-popover #pop>
+              <p-orderlist
+                [value]="item[field.name]"
+                filterBy="name"
+                filterPlaceholder="search"
+              >
+                <ng-template #subItem let-option>
+                  {{ option.name }}
+                </ng-template>
+              </p-orderlist>
+            </p-popover>
+          </div>
+          } @else if (field.inputType == 'autocomplete') {
+          <td class="text-gray-800">
+            {{ item[field.name][field.optionLabel] }}
+          </td>
+          } @else if (field.inputType == 'input' && field.type == 'date') {
+          <td class="text-gray-800">{{ item[field.name] | date }}</td>
+          } @else {
+          <td class="text-gray-800">{{ item[field.name] }}</td>
+          } }
+
+          <!-- <td class="text-gray-800">{{ course.name }}</td>
+          <td class="text-gray-700 text-wrap w-sm text-justify">
+            @if (course.description.length < 50) {
+            {{ course.description }}
+            } @else { @if (expandedCourseId == course.id) {
+            {{ course.description }}
+            <span
+              ><button
+                class="text-indigo-600 text-sm ml-2 hover:underline"
+                (click)="toggleExpandedCourse(course.id)"
+              >
+                see less
+              </button></span
+            >
+            } @else {
+            {{ course.description.slice(0, 50) }}...
+            <span
+              ><button
+                class="text-indigo-600 text-sm ml-2 hover:underline"
+                (click)="toggleExpandedCourse(course.id)"
+              >
+                see more
+              </button></span
+            >
+            } }
+          </td> -->
+
+          <td class="text-center">
+            <div class="flex gap-5">
+              <button
+                class="btn btn-sm btn-warning text-white"
+                (click)="openUpdateDialog(item['id'], item)"
+              >
+                <i class="pi pi-pencil"></i>
+              </button>
+              <button
+                class="btn btn-sm btn-error text-white"
+                (click)="onDELETE(item['id'])"
+              >
+                <i class="pi pi-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

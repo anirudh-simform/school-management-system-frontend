@@ -1,5 +1,5 @@
-<div class="space-y-8 w-full">
-  <!-- Header with Action -->
+<!-- <div class="space-y-8 w-full">
+
   <div class="flex items-center justify-between">
     <h2
       class="text-2xl font-playfair font-semibold text-indigo-700 flex items-center"
@@ -164,4 +164,10 @@
       </button>
     </div>
   </form>
-</dialog>
+</dialog> -->
+
+<app-crud-generator
+  pageName="Admin"
+  [mainServiceToken]="adminService"
+  [config]="config"
+/>

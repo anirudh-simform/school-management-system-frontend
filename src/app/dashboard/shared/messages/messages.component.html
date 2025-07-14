@@ -18,11 +18,55 @@
           <path d="m21 21-4.3-4.3"></path>
         </g>
       </svg>
-      <input type="search" class="grow" placeholder="Search" />
+      <input
+        type="search"
+        class="grow"
+        placeholder="Search"
+        [formControl]="searchControl"
+      />
     </label>
 
     <!-- Chats List -->
     <ul class="list">
+      @if (showSearchList) { @for(listItem of conversationSearchList;track
+      $index) {
+      <li class="list-row">
+        <div>
+          <img
+            class="size-10 rounded-box"
+            src="https://img.daisyui.com/images/profile/demo/1@94.webp"
+          />
+        </div>
+        <div
+          (click)="onNewConversation(listItem.id!,`${listItem.firstname} ${listItem.lastname}`)"
+          class="cursor-pointer"
+        >
+          <div>{{ listItem.firstname }} {{ listItem.lastname }}</div>
+          <div class="text-xs font-semibold opacity-60">Remaining Reason</div>
+        </div>
+      </li>
+      } }
+
+      <!-- @for(listItem of (showSearchList ? conversationSearchList :
+      conversationList);track $index) { @if (showSearchList && 'type' in
+      listItem && listItem.type == 'user') {
+      <li class="list-row">
+        <div>
+          <img
+            class="size-10 rounded-box"
+            src="https://img.daisyui.com/images/profile/demo/1@94.webp"
+          />
+        </div>
+        <div
+          (click)="onNewConversation(listItem.id!,`${listItem.firstname} ${listItem.lastname}`)"
+        >
+          <div>{{ listItem.firstname }} {{ listItem.lastname }}</div>
+          <div class="text-xs font-semibold opacity-60">Remaining Reason</div>
+        </div>
+      </li>
+      } @else if (showSearchList && 'type' in listItem && listItem.type ==
+      'conversation') { } } -->
+
       <li class="list-row">
         <div>
           <img

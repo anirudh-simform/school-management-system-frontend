@@ -1,5 +1,5 @@
-<div class="space-y-8 w-full">
-  <!-- Header with Action -->
+<!-- <div class="space-y-8 w-full">
+
   <div class="flex items-center justify-between">
     <h2
       class="text-2xl font-playfair font-semibold text-indigo-700 flex items-center"
@@ -12,7 +12,6 @@
     </button>
   </div>
 
-  <!-- Add Form Modal -->
 
   <dialog id="addStudentBatchModal" class="modal" #dialog>
     <form
@@ -122,7 +121,7 @@
     </form>
   </dialog>
 
-  <!-- Edit Department modal -->
+
 
   <dialog id="editStudentBatchModal" class="modal" #editDialog>
     <form
@@ -232,7 +231,6 @@
     </form>
   </dialog>
 
-  <!-- Department Table -->
   <div
     class="overflow-x-auto bg-white/90 backdrop-blur-lg p-6 rounded-xl shadow-lg"
   >
@@ -285,4 +283,10 @@
       </tbody>
     </table>
   </div>
-</div>
+</div> -->
+
+<app-crud-generator
+  [mainServiceToken]="studentBatchService"
+  pageName="Student Batch"
+  [config]="config"
+/>

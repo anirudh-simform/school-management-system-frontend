@@ -1,16 +1,20 @@
-type ProgramRequest = {
+import { QueryParams } from '../../../shared/models/shared.model';
+import { Course } from '../courses/courses.model';
+
+export type CreateProgramDto = {
   name: string;
   description: string;
-  courses: { id: number }[];
+  courses: number[];
 };
 
-type ProgramResponse = {
-  message: string;
-  createdProgram: {
-    id: number;
-    name: string;
-    description: string;
-  };
+export type Program = {
+  id: number;
+  name: string;
+  description: string;
+  courses: Course[];
+};
+
+export type GetAllProgramsResponse = {
   programs: {
     id: number;
     name: string;
@@ -20,53 +24,13 @@ type ProgramResponse = {
       id: number;
       description: string;
       schoolId: number;
+      createdAt: Date;
+      updatedAt: Date;
     }[];
   }[];
+  totalCount: number;
 };
 
-type UpdateProgramResponse = {
-  message: string;
-  updatedProgram: {
-    id: number;
-    name: string;
-    description: string;
-  };
-  programs: {
-    id: number;
-    name: string;
-    description: string;
-    courses: {
-      name: string;
-      id: number;
-      description: string;
-      schoolId: number;
-    }[];
-  }[];
-};
-
-type deletedProgramResponse = {
-  message: string;
-  deletedProgram: {
-    id: number;
-    name: string;
-    description: string;
-  };
-  programs: {
-    id: number;
-    name: string;
-    description: string;
-    courses: {
-      name: string;
-      id: number;
-      description: string;
-      schoolId: number;
-    }[];
-  }[];
-};
-
-export {
-  type ProgramRequest,
-  type ProgramResponse,
-  type UpdateProgramResponse,
-  type deletedProgramResponse,
-};
+export type ProgramQueryParams = {
+  name: string;
+} & Partial<QueryParams>;

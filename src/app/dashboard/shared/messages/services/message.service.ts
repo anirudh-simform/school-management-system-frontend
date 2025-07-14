@@ -3,12 +3,20 @@ import { io, Socket } from 'socket.io-client';
 import { AuthService } from '../../../../auth.service';
 import { tap } from 'rxjs';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { BASE_URL } from '../../../../app.config';
+import {
+  CreateConversationDto,
+  CreateConversationResponse,
+} from '../models/messages.models';
 @Injectable({
   providedIn: 'root',
 })
 export class MessageService {
   socket: Socket | undefined = undefined;
   router = inject(Router);
+  http = inject(HttpClient);
+  BASE_URL = inject(BASE_URL);
   constructor(private authService: AuthService) {}
 
   connect() {
@@ -42,5 +50,28 @@ export class MessageService {
 
   disconnect() {
     this.socket?.disconnect();
+  }
+
+  searchConversations(queryParams: any) {
+    return this.http.get(`${this.BASE_URL}/conversation/search`, {
+      withCredentials: true,
+      params: queryParams,
+    });
+  }
+
+  getOwnConversations() {
+    return this.http.get(`${this.BASE_URL}/conversation/`, {
+      withCredentials: true,
+    });
+  }
+
+  createConversation(createConversationDto: CreateConversationDto) {
+    return this.http.post<CreateConversationResponse>(
+      `${this.BASE_URL}/conversation/`,
+      createConversationDto,
+      {
+        withCredentials: true,
+      }
+    );
   }
 }

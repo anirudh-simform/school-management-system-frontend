@@ -1,0 +1,227 @@
+<!-- <div class="space-y-8 w-full">
+
+  <div class="flex items-center justify-between">
+    <h2
+      class="text-2xl font-playfair font-semibold text-indigo-700 flex items-center"
+    >
+      <i class="pi pi-book mr-2 text-indigo-500"></i>
+      <span class="text-gray-700">Courses</span>
+    </h2>
+    <button (click)="openModal()" class="btn btn-primary">
+      <i class="pi pi-plus mr-2"></i>Add Course
+    </button>
+  </div>
+
+
+
+  <dialog id="addCourseModal" class="modal" #dialog>
+    <form
+      method="dialog"
+      class="modal-box bg-white/90 backdrop-blur-lg rounded-xl shadow-lg font-sourcesans"
+      (ngSubmit)="onSubmit($event)"
+      [formGroup]="form"
+      #dialogForm
+    >
+      <h3
+        class="font-playfair font-semibold text-2xl text-indigo-700 mb-4 flex items-center"
+      >
+        <i class="pi pi-book mr-2 text-indigo-500"></i>
+        Add New Course
+      </h3>
+
+      <div class="form-control mb-4">
+        <label class="label">
+          <span class="label-text text-gray-700 font-medium">Course Name</span>
+        </label>
+        <input
+          type="text"
+          placeholder="Enter course name"
+          class="input input-bordered w-full bg-white"
+          formControlName="name"
+        />
+      </div>
+
+      @if (form.controls.name.invalid && (form.controls.name.dirty ||
+      form.controls.name.touched)) {
+      <p class="text-red-500 text-sm mt-1 ml-1">Name is required.</p>
+      }
+
+      <div class="form-control mb-4">
+        <label class="label">
+          <span class="label-text text-gray-700 font-medium"
+            >Course Description</span
+          >
+        </label>
+        <input
+          type="text"
+          placeholder="Enter course description name"
+          class="input input-bordered w-full bg-white"
+          formControlName="description"
+        />
+      </div>
+
+      @if (form.controls.description.invalid && (form.controls.description.dirty
+      || form.controls.description.touched)) {
+      <p class="text-red-500 text-sm mt-1 ml-1">Description is required.</p>
+      }
+
+      <div class="modal-action">
+        <button class="btn btn-ghost" (click)="closeModal($event)">
+          Cancel
+        </button>
+        <button type="submit" class="btn btn-primary">
+          <i class="pi pi-check mr-2"></i>Submit
+        </button>
+      </div>
+    </form>
+  </dialog>
+
+
+
+  <dialog id="EditDepartmentModal" class="modal" #editDialog>
+    <form
+      method="dialog"
+      class="modal-box bg-white/90 backdrop-blur-lg rounded-xl shadow-lg font-sourcesans"
+      (ngSubmit)="onEditCourse($event)"
+      [formGroup]="form"
+      #editDialogForm
+    >
+      <h3
+        class="font-playfair font-semibold text-2xl text-indigo-700 mb-4 flex items-center"
+      >
+        <i class="pi pi-building mr-2 text-indigo-500"></i>
+        Edit Course
+      </h3>
+
+      <div class="form-control mb-4">
+        <label class="label">
+          <span class="label-text text-gray-700 font-medium">Course Name</span>
+        </label>
+        <input
+          type="text"
+          placeholder="Enter Course name"
+          class="input input-bordered w-full bg-white"
+          formControlName="name"
+        />
+      </div>
+
+      @if (form.controls.name.invalid && (form.controls.name.dirty ||
+      form.controls.name.touched)) {
+      <p class="text-red-500 text-sm mt-1 ml-1">Name is required.</p>
+      }
+
+      <div class="form-control mb-4">
+        <label class="label">
+          <span class="label-text text-gray-700 font-medium"
+            >Course Description</span
+          >
+        </label>
+        <input
+          type="text"
+          placeholder="Enter Course description"
+          class="input input-bordered w-full bg-white"
+          formControlName="description"
+        />
+      </div>
+
+      @if (form.controls.description.invalid && (form.controls.description.dirty
+      || form.controls.description.touched)) {
+      <p class="text-red-500 text-sm mt-1 ml-1">Description is required.</p>
+      }
+
+      <div class="modal-action">
+        <button class="btn btn-ghost" (click)="closeEditModal($event)">
+          Cancel
+        </button>
+        <button type="submit" class="btn btn-primary">
+          <i class="pi pi-check mr-2"></i>Submit
+        </button>
+      </div>
+    </form>
+  </dialog>
+
+ 
+
+  <div id="course-list">
+    <input
+      type="text"
+      class="input input-bordered w-md bg-white mb-4"
+      placeholder="Start typing the name of the course you want to search"
+      [formControl]="searchControl"
+    />
+
+    <p-table
+      [value]="courses"
+      [lazy]="true"
+      [paginator]="true"
+      [rows]="10"
+      [totalRecords]="totalRecords"
+      (onLazyLoad)="loadCourses($event)"
+      [alwaysShowPaginator]="true"
+      [loading]="loading"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-course>
+        <tr class="hover:bg-indigo-50 transition">
+          <td class="text-gray-800">{{ course.name }}</td>
+          <td class="text-gray-700 text-wrap w-sm text-justify">
+            @if (course.description.length < 50) {
+            {{ course.description }}
+            } @else { @if (expandedCourseId == course.id) {
+            {{ course.description }}
+            <span
+              ><button
+                class="text-indigo-600 text-sm ml-2 hover:underline"
+                (click)="toggleExpandedCourse(course.id)"
+              >
+                see less
+              </button></span
+            >
+            } @else {
+            {{ course.description.slice(0, 50) }}...
+            <span
+              ><button
+                class="text-indigo-600 text-sm ml-2 hover:underline"
+                (click)="toggleExpandedCourse(course.id)"
+              >
+                see more
+              </button></span
+            >
+            } }
+          </td>
+          <td class="text-center">
+            <div class="flex gap-5">
+              <button
+                class="btn btn-sm btn-warning text-white"
+                (click)="
+                  openEditModal(course.id, course.name, course.description)
+                "
+              >
+                <i class="pi pi-pencil"></i>
+              </button>
+              <button
+                class="btn btn-sm btn-error text-white"
+                (click)="deleteCourse(course.id)"
+              >
+                <i class="pi pi-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div> -->
+
+<app-crud-generator
+  pageName="Course"
+  [config]="config"
+  [mainServiceToken]="courseServiceToken"
+/>

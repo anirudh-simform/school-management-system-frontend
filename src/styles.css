@@ -1,1 +1,36 @@
+@import "tailwindcss";
+@plugin "tailwindcss-primeui";
+@import "primeicons/primeicons.css";
+@plugin "daisyui";
+
 /* You can add global styles to this file, and also import other style files */
+
+body {
+  box-sizing: border-box;
+}
+@font-face {
+  font-family: "PlayFair";
+  font-weight: 100 900;
+  src: url("../assets/fonts/PlayfairDisplay-VariableFont_wght.ttf")
+    format("truetype");
+}
+
+@font-face {
+  font-family: "SourceSans";
+  font-weight: 100 900;
+  src: url("../assets/fonts/SourceSans3-VariableFont_wght.ttf")
+    format("truetype");
+}
+
+@font-face {
+  font-family: "PlayWrite";
+  font-weight: 100 2000;
+  src: url("../assets/fonts/PlaywriteIE-VariableFont_wght.ttf")
+    format("truetype");
+}
+
+@theme {
+  --font-playfair: "PlayFair";
+  --font-playwrite: "PlayWrite";
+  --font-sourcesans: "SourceSans";
+}
